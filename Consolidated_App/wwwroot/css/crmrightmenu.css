@@ -1,0 +1,92 @@
+﻿.item-template-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+.dx-menu-item-text {
+    flex-grow: 1 !important;
+}
+
+.verticla-arrangment {
+    writing-mode: vertical-lr !important;
+    border: none;
+    height: 100px;
+    text-orientation: mixed;
+}
+.mySidenavbody {
+    display: none;
+    right: 27px;
+}
+.mySidenavbtn span {
+    background-color:whitesmoke;
+    border: 1px solid silver;
+    margin: 2px;
+}
+.mySidenavbtn {
+    width: 25px;
+    right: 1px;
+    cursor:pointer;
+}
+.sidenav {
+    border:1px solid silver;
+    height: 64% !important;
+    resize: both !important;
+    width: 25px;
+    position: fixed;
+    z-index: 1;
+    margin-top: auto !important;
+    background-color: white;
+    transition: 0.5s;
+    padding-top: 0px;
+    padding-right: 10px;
+    bottom: 5%;
+}
+
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+.mySidenavbody h4 {
+    margin-top: 0;
+    background-color: #1899D3;
+    color: white;
+    padding-left: 10px;
+    width: 34.9vw;
+    cursor:pointer;
+}
+    .sidenav .closebtn {
+        position: absolute;
+        right: 10px;
+        font-size: 18px;
+        font-weight:900;
+        cursor:pointer;
+    }
+
+@media only screen and (max-width: 1000px) {
+    .sidenav{
+        width:80vw !important;
+    }
+    .mySidenavbtn {
+        width: 25px !important;
+    }
+    .mySidenavbody h4 {
+        width: 80vw;
+    }
+}
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+    .sidenav a {
+        font-size: 18px;
+    }
+}

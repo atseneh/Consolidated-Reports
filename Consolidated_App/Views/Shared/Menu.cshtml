@@ -1,0 +1,47 @@
+﻿@using Consolidated_App.Models.FramworkModels;
+@using Consolidated_App.WebConstants;
+@using CNET_V7_Domain.Domain.SecuritySchema;
+@inject Consolidated_App.Common.AuthNavigation.NavigatorManager navigationManager
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@inject Consolidated_App.AuthNavigation.AuthenticationManager authenticationManager
+@{
+    // var authedUser = await authenticationManager.GetAuthenticatedUser();
+    GlobalParamsModel unorderedNavList = await sharedHelpers.GetGlobalParams(new UserDTO());
+    var userRole = await sharedHelpers.GetUserRoleM( 0);
+    var rootNode = await navigationManager.PrepareNavigationList(unorderedNavList?.navigatorList);
+    var salesDashboardOn = false;
+    // var functions = await sharedHelpers.GetFunctWithAccessMs(userRole.Role,CNET_WebConstantes.Subsystem_Dashboard);
+
+}
+
+<ul class="sidebar-menu" data-widget="tree">
+    <li class="active">
+        <a href=@Url.Action("Index","Home")>
+            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+        </a>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-cloud"></i> <span>Consolidated Reports</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href=@Url.Action("Index","ConsolidatedReport")><i class="fa fa-dot-circle-o"></i>Sales Report</a></li>
+            <li><a href=@Url.Action("Index","ActivityReport")><i class="fa fa-dot-circle-o"></i> Activity Report</a></li>
+            <li><a href=@Url.Action("Index","StockConsolidationReport")><i class="fa fa-dot-circle-o"></i>Consolidated Stock Report</a></li>
+            <li><a href=@Url.Action("Index","EcommerceReport")><i class="fa fa-dot-circle-o"></i> E-Commerce Integrated Report</a></li>
+            <li><a href=@Url.Action("Index","OutleteTransfer")><i class="fa fa-dot-circle-o"></i>Transfer Outlet</a></li>
+            <li><a href=@Url.Action("Index","MassUpdate")><i class="fa fa-dot-circle-o"></i>MassUpdate</a></li>
+            <li><a href=@Url.Action("Index","OrderManagement")><i class="fa fa-dot-circle-o"></i>Order Management Report</a></li>
+            <li><a href=@Url.Action("Index","PriceUpdate")><i class="fa fa-dot-circle-o"></i>Price Update</a></li>
+            
+
+
+        </ul>
+
+    </li>
+
+</ul>
+

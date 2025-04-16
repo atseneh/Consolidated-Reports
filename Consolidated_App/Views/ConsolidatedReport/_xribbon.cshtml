@@ -1,0 +1,210 @@
+﻿@{
+
+}
+@model ConsolidateModel;
+<style>
+    .ranges li {
+        font-size: 13px;
+        background-color: #f5f5f5;
+        border: 1px solid #f5f5f5;
+        border-radius: 4px;
+        color: #348838;
+        padding: 3px 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+    }
+
+        .ranges li:hover {
+            background-color: #348838 !important;
+            border: 1px solid #348738 !important;
+            color: #fff;
+        }
+
+        .ranges li.active {
+            background-color: #378b3b !important;
+            border: 1px solid #398f3d !important;
+            color: #fff;
+        }
+
+</style>
+<div class="box box-default" style="border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
+    <div class="box-header with-border" style="background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); border-radius: 8px 8px 0 0; padding: 12px 15px;">
+        <h5 class="box-title" style="color: white; font-weight: 600; display: inline-block;">
+            <i class="fa fa-search mr-2"></i>
+        </h5>
+        <p class="text-md-left text-sm-center" id="searchCriteriaTxt"
+           style="display:inline !important; margin-left: 15px !important; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.9); font-style: italic;">
+            Filter criteria will appear here
+        </p>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="ribbonCollaps" style="color: white;">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="box-body" id="ribbon-box" style="padding: 20px; background-color: #f5f9f5;">
+        <form action="/ConsolidatedReport/getDocumentsList" method="POST" id="myForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="uploadDate" style="font-weight: 500; color: #2e7d32;">Date Range</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="background-color: #e8f5e9; color: #2e7d32;">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                            <input type="text" id="uploadDate" name="uploadDate" class="form-control daterangepicker-input"
+                                   style="border-radius: 4px !important;" autocomplete="off">
+                            <div class="input-group-append">
+                                <span class="input-group-text" style="background-color: #f5f5f5; cursor: pointer;" id="clearDate">
+                                    <i class="fa fa-eraser"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="distributor" style="font-weight: 500; color: #2e7d32;">Distributor</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="background-color: #e8f5e9; color: #2e7d32;">
+                                    <i class="fa fa-truck"></i>
+                                </span>
+                            </div>
+                            <select id="distributor" name="distributor" class="form-control" style="border-radius: 4px;">
+                                <option value="">All Distributors</option>
+                                <option value="dist1">Heluf Tsegaye Test</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-right mt-4">
+                <button type="button" id="showconsolidateactivitybutn"
+                        class="btn btn-primary"
+                        style="background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+                               border: none;
+                               padding: 8px 20px;
+                               border-radius: 4px;
+                               font-weight: 500;
+                               color: white;
+                               box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                               transition: all 0.3s ease;">
+                    <i class="fa fa-filter mr-2"></i>Apply Filters
+                </button>
+
+                <button type="button" id="resetFilters"
+                        class="btn btn-outline-secondary ml-2"
+                        style="border: 1px solid #2e7d32;
+                               color: #2e7d32;
+                               padding: 8px 20px;
+                               border-radius: 4px;
+                               font-weight: 500;
+                               transition: all 0.3s ease;">
+                    <i class="fa fa-undo mr-2"></i>Reset
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        // Initialize date range picker with proper styling
+        $('#uploadDate').daterangepicker({
+            showDropdowns: true,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            linkedCalendars: false,
+            opens: 'right',
+            startDate: moment(),
+            endDate: moment(),
+            locale: {
+                format: 'MM/DD/YYYY'
+            }
+        });
+
+        // Clear date range
+        $('#clearDate').click(function() {
+            $('#uploadDate').val('');
+        });
+
+        // Apply filters button
+        $('#showconsolidateactivitybutn').click(function () {
+            $('#ribbonCollaps').trigger('click');
+
+            // Get filter values
+            const dateRange = $('#uploadDate').val() || 'All Dates';
+            const distributor = $('#distributor option:selected').text() || 'All Distributors';
+
+            // Update search criteria text
+            let filterText = '';
+            if (dateRange !== 'All Dates') {
+                filterText += `<strong>Date:</strong> ${dateRange}`;
+            }
+            if (distributor !== 'All Distributors') {
+                if (filterText) filterText += ' | ';
+                filterText += `<strong>Distributor:</strong> ${distributor}`;
+            }
+
+            $('#searchCriteriaTxt').html(filterText || 'No filters applied');
+
+            // Submit form via AJAX
+            var formData = $('#myForm').serialize();
+            $.ajax({
+                url: '/ConsolidatedReport/getDocumentsList',
+                type: 'POST',
+                data: formData,
+                success: function (result) {
+                    $('#partial-content_documetnGrid_consolidate').html(result);
+                },
+                error: function () {
+                    console.log('Error occurred.');
+                }
+            });
+        });
+
+        // Reset button functionality
+        $('#resetFilters').click(function() {
+            $('#uploadDate').val('');
+            $('#distributor').val('');
+            $('#searchCriteriaTxt').text('Filter criteria will appear here');
+        });
+
+        // Add hover effect to the buttons
+        const buttons = ['#showconsolidateactivitybutn', '#resetFilters'];
+        buttons.forEach(btn => {
+            $(btn).hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                    $(this).css('box-shadow', '0 4px 8px rgba(0,0,0,0.15)');
+                    if(btn === '#showconsolidateactivitybutn') {
+                        $(this).css('background', 'linear-gradient(135deg, #1b5e20 0%, #388e3c 100%)');
+                    } else {
+                        $(this).css('background-color', '#e8f5e9');
+                    }
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                    $(this).css('box-shadow', '0 2px 5px rgba(0,0,0,0.1)');
+                    if(btn === '#showconsolidateactivitybutn') {
+                        $(this).css('background', 'linear-gradient(135deg, #2e7d32 0%, #4caf50 100%)');
+                    } else {
+                        $(this).css('background-color', 'transparent');
+                    }
+                }
+            );
+        });
+    });
+</script>

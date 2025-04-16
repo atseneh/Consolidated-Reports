@@ -1,0 +1,169 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 60vh;
+            /* background: linear-gradient(135deg, #a8e6cf, #56ab2f); */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            width: 420px;
+        }
+
+            .login-container h2 {
+                text-align: center;
+                color: #2e7d32;
+                margin-bottom: 1.5rem;
+                font-size: 1.8rem;
+            }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+            .form-group input {
+                width: 100%;
+                padding: 0.6rem;
+                border: 1px solid #149919;
+                border-radius: 4px;
+                font-size: 1rem;
+                transition: border-color 0.3s;
+            }
+
+                .form-group input:focus {
+                    border-color: #66bb6a;
+                    outline: none;
+                }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            color: #4a7c4a;
+            font-size: 0.95rem;
+        }
+
+            .remember-me input {
+                margin-right: 0.5rem;
+                accent-color: #4caf50;
+            }
+
+        .login-btn {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .login-btn:hover {
+                background-color: #388e3c;
+            }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="text" id="username" name="Username" placeholder="Username" required />
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" name="Password" placeholder="Password" required />
+                <input type="hidden" id="returnUrl" value="@Context.Request.Query["returnUrl"]" />
+
+            </div>
+            <div class="remember-me">
+                <input type="checkbox" id="remember" name="RememberMe" />
+                <label for="remember">Remember me</label>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <p class="error-message" id="errorMsg" style="display:none; color:red;"></p>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+          $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const username = $('#username').val().trim();
+            const password = $('#password').val().trim();
+            const remember = $('#remember').is(':checked');
+            const errorMsg = $('#errorMsg');
+            const returnUrl = getQueryParam('returnUrl');
+
+            if (username === '' || password === '') {
+              errorMsg.text('Please fill out all fields.').show();
+              return;
+            }
+
+            $.ajax({
+              url: `/Login/Login`, // <--- No sensitive data in URL
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                Username: username,
+                Password: password,
+                RememberMe: remember,
+                CompanyName: "HEINEKEN",
+                ReturnUrl: returnUrl // include it in the body
+              }),
+              success: function (response) {
+                if (response.success) {
+                  window.location.href = response.redirectUrl || '/Home/Index';
+                } else {
+                  errorMsg.text(response.message || 'Invalid login.').show();
+                }
+              },
+              error: function () {
+                errorMsg.text('Server error. Please try again.').show();
+              }
+            });
+          });
+
+          function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+          }
+        });
+
+    </script>
+
+</body>
+
+</html>
+

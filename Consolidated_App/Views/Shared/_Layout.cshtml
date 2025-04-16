@@ -1,0 +1,662 @@
+﻿@using CNET_V7_Domain.Domain.SecuritySchema;
+@using Consolidated_App.AuthNavigation;
+@using Consolidated_App.Models.FramworkModels;
+@using Microsoft.AspNetCore.Http;
+@using Cnetv7BufferHolder;
+@inject AuthenticationManager _authenticationManager;
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    try{
+       var atuthUser = await _authenticationManager.GetAuthenticatedUser();
+        int currentConsigneeUnit = 0;
+        if (atuthUser != null && atuthUser.Remark != "" && atuthUser.Remark != null)
+        {
+            string[] splitRem = atuthUser.Remark.Split('_');
+            currentConsigneeUnit = Convert.ToInt32(splitRem[0]);
+        }
+        var desc = await sharedHelpers.GetConsigneeUnitById(currentConsigneeUnit);
+        var company_ = await sharedHelpers.GetCompany();
+        var company = company_?.FirstName;
+        string companyName = @company;
+        string titleCaseCompanyName = ToTitleCase(companyName);
+    }catch{
+
+    }
+   
+}
+@functions {
+    public string ToTitleCase(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+            return str;
+
+        System.Globalization.TextInfo textInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+        return textInfo.ToTitleCase(str.ToLower());
+    }
+}
+
+<!DOCTYPE html>
+<html style="height:100% !important;">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CNET ERP | @ViewData["Title"]</title>
+    <script src="~/js/devextreme/jszip.min.js"></script>
+    <script src="~/js/devextreme/jszip.js"></script>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/dist/css/skins/skin-black-light.min.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/morris.js/morris.css">
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/jvectormap/jquery-jvectormap.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/node_modules/bower_components/select2/dist/css/select2.min.css">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- Pace style -->
+    <link rel="stylesheet" href="~/plugins/pace/pace.min.css" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/node_modules/jquery-treegrid/css/jquery.treegrid.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" /> *@
+    <!-- jQuery 3 -->
+    <script src="~/node_modules/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+
+    <script src="~/node_modules/knockout/build/output/knockout-latest.js"></script>
+
+    <script src="~/js/vendor.js" asp-append-version="true"></script>
+    <script src="~/js/row-merge-bundle.js"></script>
+@*    <script src="~/node_modules/devextreme/dist/js/dx.all.js"></script>
+    <link href="~/node_modules/devextreme/dist/css/dx.common.css" rel="stylesheet" />
+    <link href="~/node_modules/devextreme/dist/css/dx.light.css" rel="stylesheet" />*@
+
+    <!--print--></>
+    <script src="~/node_modules/@@devexpress/analytics-core/dist/js/dx-analytics-core.js"></script>
+    <script src="~/node_modules/devexpress-reporting/dist/js/dx-webdocumentviewer.js"></script>
+    <link href="~/node_modules/@@devexpress/analytics-core/dist/css/dx-analytics.common.css" rel="stylesheet" />
+    <link href="~/node_modules/@@devexpress/analytics-core/dist/css/dx-analytics.light.css" rel="stylesheet" />
+    <link href="~/node_modules/devexpress-reporting/dist/css/dx-webdocumentviewer.css" rel="stylesheet" />
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/node_modules/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <!-- Select2 -->
+    <script src="~/node_modules/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <!--Datatables-->
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.select.min.js"></script>
+    <link href="~/lib/select.datatables.min.css" rel="stylesheet" />
+    <!--FixedHeaders-->
+    <script src="~/lib/dataTables.fixedHeader.min.js"></script>
+    <!--Rowgroup-->
+    <script src="~/lib/dataTables.rowGroup.min.js"></script>
+    <!--DevExpress-->
+    <script src="~/lib/dataTables.rowGroup.min.js"></script>
+    <script src="~/lib/dataTables.select.min.js"></script>
+    <!--Select-->
+    <link rel="stylesheet" href="~/lib/select.dataTables.min.css">
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        /* Modern gradient background */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+           height: 95vh;
+        }
+
+        /* Improved sidebar styling */
+        .main-sidebar {
+            background: linear-gradient(to bottom, #008249, #006638) !important;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Smooth transitions for sidebar items */
+        .sidebar-menu li a {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu li:hover a {
+            background-color: rgba(255,255,255,0.1) !important;
+            border-left: 3px solid #fff;
+        }
+
+        /* Modern header styling */
+        .main-header {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #fff !important;
+        }
+
+        /* Logo animation */
+        .logo-lg img {
+            transition: transform 0.3s ease;
+        }
+
+            .logo-lg img:hover {
+                transform: scale(1.05);
+            }
+
+        /* User panel styling */
+        .user-header {
+            background: linear-gradient(to right, #008249, #00a859) !important;
+        }
+
+        /* Notification badges */
+        .label-warning {
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+
+        /* Content wrapper styling */
+        .content-wrapper {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            margin: 15px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Footer styling */
+        .main-footer {
+            background: #fff;
+            border-top: 1px solid #e4e8eb;
+            padding: 15px;
+        }
+
+        /* Button enhancements */
+        .btn {
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn-default {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+
+            .btn-default:hover {
+                background: #e9ecef;
+            }
+
+        /* Form control styling */
+        .form-control {
+            border-radius: 4px;
+            box-shadow: none;
+            border: 1px solid #ced4da;
+        }
+
+            .form-control:focus {
+                border-color: #008249;
+                box-shadow: 0 0 0 0.2rem rgba(0, 130, 73, 0.25);
+            }
+
+        /* Card-like styling for content sections */
+        .box {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: none;
+        }
+
+        .box-header {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            background: #fff;
+            border-bottom: 1px solid #e4e8eb;
+        }
+
+        /* Modern scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #008249;
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #006638;
+            }
+
+        /* Animation for page transitions */
+        .content-wrapper {
+            animation: fadeIn 0.5s;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .content-wrapper {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .navbar-custom-menu {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
+    <style>
+        .main-sidebar {
+            border-color: rgba(0,0,0,0.2) !important;
+        }
+
+        @@media (min-width: 768px) {
+            .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right), .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+                display: block !important;
+                position: absolute;
+                width: 300px !important;
+                left: 50px
+            }
+        }
+
+        .skin-black-light .wrapper, .skin-black-light .main-sidebar, .skin-black-light .left-side {
+            background-color: #008249 !important;
+        }
+
+        .skin-black-light .sidebar-menu > li:hover > a, .skin-black-light .sidebar-menu > li.active > a {
+            color: #f4f4f4;
+            background: #00a65a !important;
+        }
+        .skin-black-light .sidebar-menu > li > .treeview-menu {
+            background: fixed #00a65a !important;
+        }
+        .skin-black-light .main-header .logo:hover {
+            background-color: #ffffff !important;
+        }
+
+        .skin-black-light .main-header .logo {
+            background-color: #fff !important;
+        }
+
+      /*   .main-header .sidebar-toggle:before {
+            content: none !important;
+        } */
+    </style>
+</head>
+<body class="skin-black-light sidebar-mini sidebar-collapse">
+ @*<body class="hold-transition skin-black-light sidebar-mini">*@
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href=@Url.Action("Index","Home") class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">
+                    <img src="~/images/ficonsvg.svg" alt="Red"  />
+
+                </span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg" style="color: #ed3d41;font-size: large;font-weight: 600;">
+                    Heinken Reports
+                    @* <img src="~/images/redLogo-removebg-preview.png" alt="Red" style="max-width: 250px; max-height: 65px;background: #f1dfdf03;margin-left: -40px;" /> *@
+                </span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    @* <img src="/heinkenStar.ico" alt="Toggle navigation" style="height:25px;" /> *@
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <div class="navbar-custom-menu" style="float: left !important;margin-left: 10% !important;margin-top: 10px;">
+                    @{
+                        // if (titleCaseCompanyName != null)
+                        // {
+                        //     <h5 style="font-size: medium !important;"><b>Welcome To @titleCaseCompanyName</b>  (@desc?.FirstOrDefault()?.Name)</h5>
+                        // }
+                        // else
+                        // {
+                        //     <h5>Welcome</h5>
+                        // }
+                    }
+                </div>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+
+                      @*   <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-warning">4</span>
+                            </a>
+
+                        </li>
+                        <!-- Notifications: style can be found in dropdown.less -->
+                        <li class="dropdown notifications-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="label label-warning">10</span>
+                            </a>
+                        </li> *@
+                        <li class="dropdown notifications-menu">
+
+                        </li>
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/images/guest.png" class="user-image" alt="User Image">
+                                @*<span class="hidden-xs">@String.Format("{0} {1} {2}", personInfo?.Ltitle, personInfo?.firstName, personInfo?.middleName)</span>*@
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/images/guest.png" class="img-circle" alt="User Image">
+
+                                    <p style="color:#a05922">
+                                        @* @String.Format("{0}", atuthUser?.UserName) *@
+                                        @*<small>@roleDefinition?.description</small>*@
+                                        
+                                        <small></small>
+                                    </p>
+                                </li>
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a asp-controller="Login" asp-action="Logout" class="btn btn-default btn-flat">Log out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                            @*<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>*@
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <!-- search form -->
+                @*   <form action="#" method="get" class="sidebar-form" style="background-color: #363640;">
+                <div class="input-group" style="">
+                <input type="text" name="q" class="form-control" style="height:35px !important ;" placeholder="Search...">
+                <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                <i class="fa fa-search"></i>
+                </button>
+                </span>
+                </div>
+                </form>*@
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                 @await Html.PartialAsync("Menu", new GlobalParamsModel()) 
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 7.0.0
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="#">Red Cloud ICT Solutions PLC</a>.</strong> All rights
+            reserved.
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark" style="display: none;">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                @*<li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>*@
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">Recent Activity</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:void(0)">
+                                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                                    <p>Will be 23 on April 24th</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <i class="menu-icon fa fa-user bg-yellow"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
+
+                                    <p>New phone +1(800)555-1234</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
+
+                                    <p>nora@example.com</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <i class="menu-icon fa fa-file-code-o bg-green"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
+
+                                    <p>Execution time 5 seconds</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                    <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:void(0)">
+                                <h4 class="control-sidebar-subheading">
+                                    Custom Template Design
+                                    <span class="label label-danger pull-right">70%</span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <h4 class="control-sidebar-subheading">
+                                    Update Resume
+                                    <span class="label label-success pull-right">95%</span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-success" style="width: 95%"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <h4 class="control-sidebar-subheading">
+                                    Laravel Integration
+                                    <span class="label label-warning pull-right">50%</span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)">
+                                <h4 class="control-sidebar-subheading">
+                                    Back End Framework
+                                    <span class="label label-primary pull-right">68%</span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                </div>
+                <!-- /.tab-pane -->
+                <!-- Stats tab content -->
+                <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/node_modules/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Morris.js charts -->
+    <script src="~/node_modules/bower_components/raphael/raphael.min.js"></script>
+    <script src="~/node_modules/bower_components/morris.js/morris.min.js"></script>
+    <!-- Sparkline -->
+    <script src="~/node_modules/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+    <!-- jvectormap -->
+    <script src="~/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/node_modules/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/node_modules/bower_components/moment/min/moment.min.js"></script>
+    <script src="~/node_modules/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- Select2 -->
+    <script src="~/node_modules/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <!-- datepicker -->
+    <script src="~/node_modules/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="~/node_modules/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/node_modules/bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+    <!-- Alert -->
+    <script src="~/lib/alert/alert.js"></script>
+    @*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
+    <!-- Custome Script -->
+    <script src="~/js/site.js"></script>
+    <script src="~/js/localsweetalert.min.js"></script>
+    <!--CKEditor-->
+    <script src="../../node_modules/bower_components/ckeditor/ckeditor.js"></script>
+    <script src="~/node_modules/bower_components/ckeditor/ckeditor.js"></script>
+    <!--Excel Export-->
+
+    <script src="~/js/polyfill.min.js"></script>
+    <script src="~/js/exceljs.min.js"></script>
+    <script src="~/js/FileSaver.min.js"></script>
+
+    <!--FixedHeaders-->
+    @*<script src="~/lib/FixedHeader-3.1.7/js/fixedHeader.dataTables.min.js"></script>
+    <script src="~/lib/FixedHeader-3.1.7/js/fixedHeader.bootstrap.min.js"></script>*@
+    <!--Pace-->
+    @*<script src="~/plugins/pace/pace.min.js"></script>*@
+
+    @*TREE GRID VIEW*@
+    @*<script src="~/node_modules/bower_components/jquery/src/jquery.js"></script>*@
+    <script src="~/node_modules/bower_components/jquery/src/jquery.treegrid.js"></script>
+    <script src="~/node_modules/bower_components/jquery/src/jquery.treegrid.bootstrap2.js"></script>
+    <script src="~/node_modules/bower_components/jquery/src/jquery.treegrid.bootstrap3.js"></script>
+    <script src="~/node_modules/bower_components/jquery/src/jquery.treegrid.min.js"></script>
+    <script src="~/node_modules/bower_components/jquery/src/jquery.cookie.js"></script>
+
+    @*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+            $("#clientScreenWidth").val($(window).width());
+            $("#clientScreenHeight").val($(window).height());
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.spn').siblings(".treegrid-expander").remove();
+        });
+
+    </script>
+
+</body>
+</html>

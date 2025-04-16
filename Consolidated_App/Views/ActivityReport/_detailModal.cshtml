@@ -1,0 +1,53 @@
+﻿@model ConsolidateActivitySearchModel
+<style>
+    .modal-header h4 {
+        font-weight: bold;
+        margin: 0;
+    }
+    .modal-content {
+        border-radius: 8px !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        overflow: hidden !important;
+        border: none !important;
+    }
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+        transform: translate(0, -10%);
+    }
+    .modal.show .modal-dialog {
+        transform: translate(0, 0);
+    }
+
+</style>
+
+<div class="modal" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" data-record="">
+    <div class="modal-dialog modal-lg" role="document" style="width:70% !important; margin-left:15% !important;">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px;">
+                <h4 class="modal-title" id="detailModalLabel" style="margin: 0; font-size: 18px; font-weight: 600; flex-grow: 1; text-align: left;">
+                    DistributorName
+                </h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1; font-size: 24px; font-weight: bold; background: none; border: none; cursor: pointer;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                @* Html.Hidden(nameof(Model.currentDistributor)) *@  
+                <div class="nav-tabs-custom">
+                    <div class="tab-content">
+                        <div class="active tab-pane" id="syncLineitems">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @await Html.PartialAsync("_consolidateActivityDetail", Model)
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

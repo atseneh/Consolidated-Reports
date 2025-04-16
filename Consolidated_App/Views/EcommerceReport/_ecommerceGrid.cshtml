@@ -1,0 +1,51 @@
+﻿@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+
+@(Html.DevExtreme().DataGrid<EcommerceVoucherResult>()
+
+            .ID("consolidated-stock-report-list")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("sEMID").Caption("SEM_ID").Width(200);
+                columns.Add().DataField("issuedDate").Caption("Ordered Date").Width(200);
+                columns.Add().DataField("deliveryDate").Caption("Delivered Date");
+                columns.Add().DataField("user_Name").Caption("Customer Name");
+                columns.Add().DataField("vsmusername").Caption("VSM User Name");
+                columns.Add().DataField("sku").Caption("SKU Name");
+                columns.Add().DataField("quantityOrdered").Caption("QYT Ordered");
+                columns.Add().DataField("quantityDelivered").Caption("QYT Delivered");
+                columns.Add().DataField("price_Bfore_VAT").Caption("Price Before VAT");
+                columns.Add().DataField("vAT").Caption("VAT");
+                columns.Add().DataField("distributor").Caption("Distributor");
+                columns.Add().DataField("srname").Caption("Sr Name");
+            
+
+            })
+            .Paging(p => p.PageSize(150))
+            .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
+            .Height(500)
+            .FilterRow(f => f.Visible(false))
+            .HeaderFilter(f => f.Visible(false))
+            .SearchPanel(p => p.Visible(true).Width(500))
+            .GroupPanel(p => p.Visible(false))
+            .Grouping(g => g.AutoExpandAll(false))
+            .RemoteOperations(false)
+            .RowAlternationEnabled(true)
+            .AllowColumnResizing(true)
+            .ColumnAutoWidth(true)
+            .ShowBorders(true)
+            .ColumnChooser(c => c.Enabled(false))
+            .Summary(s => s
+            .TotalItems(totalItems =>
+            {
+                @*    totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber"); *@
+            })
+            )
+            @*  .OnRowPrepared("onRowPrepared")
+            .OnContentReady("onGridInitialized")
+            .OnExporting("exporting") *@
+            )

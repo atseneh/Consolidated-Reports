@@ -1,0 +1,45 @@
+﻿@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+
+@(Html.DevExtreme().DataGrid<StockConsolidationResult>()
+
+            .ID("consolidated-stock-report-list")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("distributor").Caption("Distributor").Width(200);
+                columns.Add().DataField("store").Caption("Store").Width(200);
+                columns.Add().DataField("sku").Caption("SKU Code");
+                columns.Add().DataField("description").Caption("SKU Name");
+                columns.Add().DataField("lastUpdate").Caption("Last Update");
+                columns.Add().DataField("balance").Caption("Balance");
+                columns.Add().DataField("balanceColor").Visible(false);
+               
+            })
+            .Paging(p => p.PageSize(150))
+            .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
+            .Height(500)
+            .FilterRow(f => f.Visible(false))
+            .HeaderFilter(f => f.Visible(false))
+            .SearchPanel(p => p.Visible(true).Width(500))
+            .GroupPanel(p => p.Visible(false))
+            .Grouping(g => g.AutoExpandAll(false))
+            .RemoteOperations(false)
+            .RowAlternationEnabled(true)
+            .AllowColumnResizing(true)
+            .ColumnAutoWidth(true)
+            .ShowBorders(true)
+            .ColumnChooser(c => c.Enabled(false))
+            .Summary(s => s
+            .TotalItems(totalItems =>
+            {
+                @*    totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber"); *@
+            })
+            )
+            @*  .OnRowPrepared("onRowPrepared")
+            .OnContentReady("onGridInitialized")
+            .OnExporting("exporting") *@
+            )

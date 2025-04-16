@@ -1,0 +1,31 @@
+﻿@using Consolidated_App.Models;
+@model StockConsolidationSearch;
+@{
+    ViewData["Title"] = "HEINEKEN - Ecommerce Order Report";
+}
+<section class="content-header">
+    <h5>
+        @ViewData["Title"]
+    </h5>
+    <ol class="breadcrumb">
+        <li><a href=@Url.Action("Index","Home")><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-cloud"></i> Report</a></li>
+        <li class="active">Ecommerce Order Report</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            @await Html.PartialAsync("_Ribbon")
+        </div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @await Html.PartialAsync("_ecommerceGrid")
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,457 @@
+﻿
+.headerbackground {
+    background-color: #1899D3 !important;
+    color: white !important;
+}
+.dx-datagrid-rowsview{
+    border:none !important;
+}
+.toptitle {
+    font-weight: bolder;
+    text-align: center;
+    border-bottom: 1px solid silver;
+}
+.dx-header-row {
+    background-color: #1899D3 !important;
+}
+.dx-datagrid .dx-header-filter-empty {
+    color: rgb(89 6 36/50%) !important;
+}
+.rightggreater1199 {
+    text-align: right !important;
+}
+
+@media only screen and (max-width: 1199px) {
+
+    .rightggreater1199 {
+        text-align: left !important
+    }
+}
+
+.nav-tabs-custom >.nav-tabs {
+    border-bottom-color: #ddd !important;
+}
+.label {
+    font-size: 12px;
+}
+
+.demo-container {
+    height: 450px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0px;
+    gap: 15px;
+}
+
+.dx-popup-content {
+    font-size: 12px;
+}
+
+.caption {
+    padding-bottom: 8px;
+    font-weight: 500;
+}
+
+/*.content {
+    display: flex;
+    justify-content: space-between;
+}*/
+.whitebackground {
+    background-color: white !important;
+}
+.dataTables_filter label{
+    float:right !important;
+}
+.highlight {
+    background-color: #1899D3 !important;
+    color: white !important;
+}
+.marginTable tbody tr td, .marginTable tbody tr td input {
+    margin: 0 !important;
+}
+.table td {
+    padding: 0 !important;
+}
+thead {
+    background-color: white !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1;
+}
+.table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+    .table thead th {
+        vertical-align: top !important;
+        text-align: left;
+        min-width: 160px;
+        border-bottom: none !important;
+    }
+    .headerbackground {
+        background-color: #1899D3 !important;
+        color: white !important;
+    }
+    .table th {
+        padding: 0 !important;
+        border-top: 0 !important;
+    }
+
+.numberCell {
+    padding: 3px 3px;
+    text-align: right;
+}
+.btnxs {
+    width: 80px;
+    height: 25px;
+    border: 1px solid silver;
+    font-size: 6px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    color: black !important;
+    font-weight: bold !important;
+    font-size: 13px !important;
+    border-radius: 5px !important;
+}
+.dx-field-value .dx-button-text {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+.modalbody2 {
+    margin-top: 6px;
+    border-top: 1px solid #c5c5c5;
+}
+.modal-header1 {
+    padding: 1px !important;
+    border-bottom: 1px solid #c5c5c5;
+}
+.modal-body1{
+    padding-top:4px !important;
+}
+.fieldset {
+    border: 1px dotted #c5c5c5;
+    margin: 0px;
+    padding: 1px;
+    text-align: center;
+    font-size: medium;
+    min-height: 94px !important;
+    background-color: #eee !important;
+    color: black;
+}
+.legend {
+    margin: 0;
+    width: 90%;
+    padding: 0;
+    border: none;
+    font-size: medium;
+    background-color: #1899D3 !important;
+    color: white;
+}
+
+.nav1{
+    position:sticky;
+    top:0vh;
+}
+.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+    color: #020414 !important;
+    font-weight: 500 !important;
+}
+.resizetextarea {
+    width: 100%;
+    padding: 1px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 16px;
+    color: #2d3748;
+}
+
+    textarea:focus {
+        border-color: #3182ce;
+        box-shadow: 0 0 5px rgba(49, 130, 206, 0.5);
+        outline: none;
+    }
+.responsiveparent {
+    position: relative;
+    height: 100vh;
+}
+    .responsiveparent > div:first-child {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+@media only screen and (max-width: 768px) {
+    .responsiveparent {
+        position: relative;
+        height: auto;
+    }
+    .responsiveparent > div:first-child {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+    }
+}
+.parent {
+    position: relative;
+    height: 100vh;
+}
+
+.parent > div:first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: 100%;
+}
+.imagediv {
+    width: auto;
+    min-height: 95% !important;
+    border: 1px solid white;
+    position: relative;
+    overflow: scroll;
+}
+    .imagediv iframe {
+        position: absolute;
+        width: 100vw !important;
+        top: 0 !important;
+        margin: 0% 1% !important;
+        height: 100%;
+    }
+.cstmbutton {
+    background-color: lightgray;
+    border-radius:8px;
+}
+.flexCol {
+    display: flex;
+}
+@media only screen and (max-width: 700px) {
+    .flexCol {
+        display: block;
+    }
+}
+.flexCol1 {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+    padding: 10px !important;
+}
+
+.flexCol2 {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+    padding: 10px !important;
+    overflow: scroll;
+}
+
+.table1 {
+    margin: 0 2px !important;
+    border: 1px solid #c5c5c5;
+    overflow: scroll !important;
+}
+.mycontainer {
+    border: 1px solid #c5c5c5;
+    padding: 1px;
+    margin: 1px;
+}
+.topmargin {
+    margin-top: 6px;
+}
+
+.dx-buttongroup-wrapper {
+    height: 50px;
+    width: 80px;
+}
+
+.dx-button-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 !important;
+}
+
+.dx-icon {
+    margin: 0px;
+}
+
+.dx-button-text {
+    font-size: 13px !important;
+    font-weight: bold !important;
+}
+
+.btn-app {
+    border: 1px solid silver !important;
+    font-size: 6px;
+    margin: 0 !important;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    margin: 0 4px !important;
+    color: black !important;
+    font-weight: bold !important;
+    font-size: 13px !important;
+    border-radius: 5px !important;
+}
+.btnapp {
+    height: 50px !important;
+    min-width:75px !important;
+}
+.btnapp2 {
+    height: 50px !important;
+    width: 75px !important;
+}
+.container2 {
+    border-left: 1px solid #c5c5c5;
+    padding: 0px !important;
+    margin: 0px !important;
+    border-radius: 0px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.content {
+    overflow: hidden !important;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+.scrollablebody {
+    max-height: 100vh !important;
+    width:auto !important;
+    overflow: auto;
+}
+.custom-modal-control {
+    width: 55%;
+}
+@media only screen and (max-width: 1400px) {
+    .custom-modal-control {
+        width: 90%;
+    }
+    .scrollablebody {
+        width: 100% !important;
+    }
+}
+
+.tdinputtype {
+    margin: -1px !important;
+    border-radius: 5px;
+    background-color: inherit;
+    width: 100%;
+    min-width: 100px !important;
+}
+.tdinputtype:focus {
+    border: none !important;
+    background-color: papayawhip;
+}
+
+.rightgreater1199 {
+    text-align: right !important
+}
+@media only screen and (max-width:1199px) {
+    .rightgreater1199 {
+        text-align: left !important
+    }
+}
+/*Scroller*/
+:root {
+    --code-color: darkred;
+    --code-bg-color: #aaaaaa;
+    --code-font-size: 14px;
+    --code-line-height: 1.4;
+    --scroll-bar-color: #c5c5c5;
+    --scroll-bar-bg-color: #f6f6f6;
+}
+
+::-webkit-scrollbar-corner {
+    background: rgba(0,0,0,0.5);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-bar-color) var(--scroll-bar-bg-color);
+}
+
+    /* Works on Chrome, Edge, and Safari */
+    *::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: var(--scroll-bar-bg-color);
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: var(--scroll-bar-color);
+        border-radius: 20px;
+        border: 3px solid var(--scroll-bar-bg-color);
+    }
+
+::-webkit-scrollbar {
+    width: 8px;
+    /* for vertical scroll bar height: 8px;
+         for horizontal scroll bar*/
+}
+
+/*for Firefox add this class as well*/
+.thin_scroll {
+    scrollbar-width: thin;
+    auto | thin | none | <length>;
+}
+
+/*Change Addisu*/
+.nav-tabs-custom > .nav-tabs1 {
+    border-bottom-color: #08c !important;
+}
+/*invissible scroller*/
+/*::-webkit-scrollbar {
+    display: none !important;
+}*/
+.page-fit-iframe {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 960px;
+    height: 550px;
+    border: none;
+    margin: 0;
+    padding: 0;
+    overflow: scroll;
+    z-index: 999999;
+    resize: horizontal !important;
+}
+.full-screen-iframe {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    margin: 0;
+    padding: 0;
+    overflow: scroll;
+    z-index: 999999;
+    resize: horizontal !important;
+}

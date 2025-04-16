@@ -1,0 +1,44 @@
+﻿
+@using Consolidated_App.Models
+@model ConsolidateModel
+@{
+    ViewData["Title"] = "Sales Report";
+
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h5>
+        @ViewData["Title"]
+    </h5>
+    <ol class="breadcrumb">
+        <li><a href=@Url.Action("Index","Home")><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-cloud"></i> Report</a></li>
+        <li class="active">Consolidated Report</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- Main row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        @await Html.PartialAsync("_xribbon")  
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div id="partial-content_documetnGrid_consolidate">
+                                @await Html.PartialAsync("_consolidateGrid")
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

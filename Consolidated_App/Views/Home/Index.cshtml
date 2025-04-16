@@ -1,0 +1,70 @@
+﻿<div class="content-wrapper" style="background: url('/images/background-pattern.png') center/cover no-repeat;">
+    <section class="content-header text-center">
+        <h1 style="font-size: 3.5rem; font-weight: 300; color: #008249; margin-top: 50px;">
+            Welcome to <strong>Consolidated Reports Portal</strong>
+        </h1>
+        <p class="lead" style="font-size: 1.5rem; color: #555;">
+            Centralized access to all your business reports and data management tools
+        </p>
+    </section>
+
+    <section class="content" style="padding: 0 50px;">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="info-box" style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 30px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <span class="info-box-icon bg-gradient-green" style="background: linear-gradient(to right, #008249, #00a859);">
+                        <i class="fa fa-bar-chart" style="color: white;"></i>
+                    </span>
+                    <h3>Sales & Activity Reports</h3>
+                    <p>Access comprehensive sales performance metrics and activity tracking across all outlets.</p>
+                    <a href="@Url.Action("Index","ConsolidatedReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Sales Reports</a>
+                    <a href="@Url.Action("Index","ActivityReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Activity Reports</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-box" style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 30px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <span class="info-box-icon bg-gradient-blue" style="background: linear-gradient(to right, #2c7be5, #00a8ff);">
+                        <i class="fa fa-cubes" style="color: white;"></i>
+                    </span>
+                    <h3>Inventory Management</h3>
+                    <p>Consolidated stock views, transfer management, and real-time inventory tracking.</p>
+                    <a href="@Url.Action("Index","StockConsolidationReport")" class="btn btn-sm btn-primary" style="margin-top: 15px;">Stock Reports</a>
+                    <a href="@Url.Action("Index","OutleteTransfer")" class="btn btn-sm btn-primary" style="margin-top: 15px;">Transfer Outlet</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-box" style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 30px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <span class="info-box-icon bg-gradient-purple" style="background: linear-gradient(to right, #8e44ad, #9b59b6);">
+                        <i class="fa fa-shopping-cart" style="color: white;"></i>
+                    </span>
+                    <h3>E-Commerce & Pricing</h3>
+                    <p>Integrated e-commerce reports, order management, and pricing tools.</p>
+                    <a href="@Url.Action("Index","EcommerceReport")" class="btn btn-sm btn-info" style="margin-top: 15px;">E-Commerce Reports</a>
+                    <a href="@Url.Action("Index","PriceUpdate")" class="btn btn-sm btn-info" style="margin-top: 15px;">Price Updates</a>
+                    <a href="@Url.Action("Index","OrderManagement")" class="btn btn-sm btn-info" style="margin-top: 15px;">Order Management</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-md-12 text-center">
+                <div style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #008249;">Quick Data Tools</h3>
+                    <div class="btn-group" style="margin-top: 15px;">
+                        <a href="@Url.Action("Index","MassUpdate")" class="btn btn-default">
+                            <i class="fa fa-database"></i> Mass Data Update
+                        </a>
+                        <a href="@Url.Action("Index","OrderManagement")" class="btn btn-default">
+                            <i class="fa fa-truck"></i> Order Management
+                        </a>
+                        <a href="@Url.Action("Index","PriceUpdate")" class="btn btn-default">
+                            <i class="fa fa-tag"></i> Price Management
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

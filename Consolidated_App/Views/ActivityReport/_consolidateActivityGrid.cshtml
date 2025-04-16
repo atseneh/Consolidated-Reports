@@ -1,0 +1,103 @@
+﻿@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+
+@{
+    // Sample Data Source
+    var sampleData = new[]
+    {
+        new ConsolidateActivityResult
+        {
+            distributor = "Distributor A",
+            earliestActivityToday = "2025-03-24 08:00:00",
+            latestActivityToday = "2025-03-24 18:00:00",
+            lastseen = "2025-03-24 18:15:00",
+            totalSKU = 20,
+            totalTransactionsCurrencyFormat = "$1,000",
+            totalQuantityCurrencyFormat = "500",
+            totalSalesCurrencyFormat = "$5,000"
+        },
+        new ConsolidateActivityResult
+        {
+            distributor = "Distributor B",
+            earliestActivityToday = "2025-03-24 09:00:00",
+            latestActivityToday = "2025-03-24 17:30:00",
+            lastseen = "2025-03-24 17:45:00",
+            totalSKU = 25,
+            totalTransactionsCurrencyFormat = "$2,000",
+            totalQuantityCurrencyFormat = "750",
+            totalSalesCurrencyFormat = "$7,500"
+        }
+    };
+}
+<style>
+    .custom-button {
+        background-color: #ff895e;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 0 7px 5px 7px !important;
+        text-align: center;
+    }
+</style>
+@(Html.DevExtreme().DataGrid<ConsolidateActivityResult>()
+    .ID("consolidate-activity-list")
+    .DataSource(ds => ds
+        .Mvc()
+        .Controller("ActivityReport")
+        .LoadAction("GetDocumentList_Activity")
+        .Key("distributor")
+        .LoadParams(Model)
+    )
+    .Columns(columns =>
+    {
+        columns.Add()
+           .Name("x")
+           .Type(GridCommandColumnType.Buttons)
+           .Width(40)
+           .Buttons(b =>
+           {
+               b.Add()
+               .Name("show")
+               .Text("....")
+               .CssClass("custom-button")
+               .OnClick("showDocumentDetail");
+           });
+        columns.Add().DataField("vsmCounts").Caption("VAN").Width(200);
+        columns.Add().DataField("earliestActivityToday").Caption("Earliest Activity").Width(200);
+        columns.Add().DataField("latestActivityToday").Caption("Latest Activity").Width(200);
+        columns.Add().DataField("lastseen").Caption("Last Seen");
+        columns.Add().DataField("totalSKU").Caption("No SKU");
+        columns.Add().DataField("totalTransactionsCurrencyFormat").Caption("Total Transactions");
+        columns.Add().DataField("totalQuantityCurrencyFormat").Caption("Sum of Quantity");
+        columns.Add().DataField("totalSalesCurrencyFormat").Caption("Total Sales");
+    })
+    .Paging(p => p.PageSize(150))
+    .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
+    .Height(500)
+    .FilterRow(f => f.Visible(false))
+    .HeaderFilter(f => f.Visible(false))
+    .SearchPanel(p => p.Visible(false).Width(500))
+    .GroupPanel(p => p.Visible(false))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(false)
+    .RowAlternationEnabled(true)
+    .AllowColumnResizing(true)
+    .ColumnAutoWidth(true)
+    .ShowBorders(true)
+    .ColumnChooser(c => c.Enabled(false))
+    .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+        // Add summary configurations here if needed
+    })
+    )
+)
+
+<script>
+    function showDocumentDetail(event) {
+        $('#detailModal').modal({ backdrop: 'static', keyboard: false });
+    }
+</script>

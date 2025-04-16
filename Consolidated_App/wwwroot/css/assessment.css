@@ -1,0 +1,155 @@
+﻿.content {
+    border-radius: 15px;
+    /*background: rgba(90, 89, 89, 0.116);*/
+}
+
+.answer {
+   /* border-width: thin;
+    border-radius: 20px;*/
+}
+
+    .answer div {
+        transition: 0.5s;
+        background-color: transparent;
+        line-height: 180%;
+    }
+
+        .answer div:nth-child(1) {
+            border-radius: 15px 15px 0 0;
+        }
+
+        .answer div:nth-last-child(1) {
+            border-radius: 0 0 15px 15px;
+        }
+
+        .answer div:hover {
+            background-color: rgba(196, 181, 181, 0.308);
+        }
+
+        .answer div label {
+            cursor: pointer;
+            width: 90%;
+            display: inline-block;
+        }
+
+.question {
+    user-select: all;
+    margin-top:15px;
+
+}
+
+.clicked {
+   /* background-color: rgba(31, 29, 29, 0.308) !important;*/
+}
+
+input {
+    vertical-align: middle;
+    ;
+}
+
+.fromBank:not(.on) {
+    /*display: none;*/
+}
+
+
+@media screen and (max-width:1100px) {
+    .answer div {
+        line-height: 110%;
+        padding: 1px 0.5rem;
+        font-size: medium;
+    }
+
+    .question strong {
+        font-size: large;
+    }
+}
+
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+ 
+   
+}
+
+    .rating > input {
+        display: none
+    }
+
+    .rating > label {
+        position: relative;
+        width: 1em;
+        font-size: 2.5vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+        .rating > label::before {
+            /*content: "\2605";*/
+            content: "\2605";
+            position: absolute;
+            opacity: 0
+        }
+
+        .rating > label:hover:before,
+        .rating > label:hover ~ label:before {
+            opacity: 1 !important
+        }
+
+    .rating > input:checked ~ label:before {
+        opacity: 1
+    }
+
+    .rating:hover > input:checked ~ label:before {
+        opacity: 0.4
+    }
+
+
+    .form-text{
+        width:60%;
+    }
+/*////////////////////////////////////////////*/
+.time {
+    width: 100vw;
+    text-align: center;
+}
+
+#count {
+    font-size: larger;
+    text-align: center;
+}
+
+.pr {
+    transition: 0.5s;
+    height: 60px;
+    width: 300px;
+    background: unset;
+    border-radius: 20px;
+}
+
+progress::-webkit-progress-value {
+    background: rgb(7, 178, 235);
+}
+
+.bar {
+    width: 10vw;
+    margin: auto;
+    background: gray;
+    height: 1vh;
+    border-radius: 10px;
+    margin-bottom:35px;
+}
+
+.prog {
+    width: 100%;
+    background: rgba(4, 255, 4, 0.6);
+    height: inherit;
+    border-radius: inherit;
+    transition: 0.5s;
+}
+.progress-bar{
+    transition-timing-function:linear !important;
+    transition-duration: 1s !important;
+    
+}
