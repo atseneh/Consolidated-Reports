@@ -1,1 +1,292 @@
-﻿<h1>Outlate Transfer</h1>
+﻿@using Consolidated_App.Models.FramworkModels
+@model OutletTransferModel
+@{
+    ViewData["Title"] = "Outlet Transfer";
+}
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    var compBranchs = await sharedHelpers.GetDynamicData<List<CNET_V7_Domain.Domain.CommonSchema.AllHeinekenDistDTO>>("AllHeinekenDist", new Dictionary<string, string>());
+
+    // After processing
+    var distributorList = compBranchs?.Select(s => new Select2Result
+            {
+                id = s?.Tin,
+                text = s.TradeName.ToUpper()
+            }).ToArray();
+}
+
+<style>
+    /* Compact Styles */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+
+    .content-header h5 {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .box {
+        border-top: 3px solid #02344c;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+        height: calc(100% - 10px); /* Full height within row */
+    }
+
+    .box-header {
+        background-color: #f9f9f9;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .box-title {
+        font-weight: 600;
+        color: #02344c;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    /* Grid Containers */
+    .grid-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        height: calc(100vh - 250px); /* Adjust based on your header height */
+    }
+
+    .grid-column {
+        flex: 1;
+        min-width: 0; /* Prevent flex items from overflowing */
+    }
+
+    /* Form Controls */
+    .form-inline-compact {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+        .form-inline-compact .form-group {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 3px !important;
+        height: 32px;
+        min-width: 180px;
+    }
+
+    /* Buttons */
+    .btn-compact {
+        padding: 4px 8px;
+        font-size: 13px;
+        height: 32px;
+    }
+
+    /* Panels */
+    .source-panel {
+        border-left: 4px solid #fb5b5b;
+        background-color: rgba(251, 91, 91, 0.05);
+    }
+
+    .destination-panel {
+        border-left: 4px solid #5bfb6e;
+        background-color: rgba(91, 251, 110, 0.05);
+    }
+
+    /* DataGrids */
+    .dx-datagrid {
+        height: calc(100% - 40px) !important; /* Subtract header height */
+    }
+</style>
+
+<section class="content-header">
+    <h5>
+        @ViewData["Title"]
+    </h5>
+    <ol class="breadcrumb">
+        <li><a href=@Url.Action("Index","Home")><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active"><i class="fa fa-exchange"></i> Outlet Transfer</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Compact Distributor Selection -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <div class="form-inline-compact">
+                        <div class="form-group">
+                            <label class="small">From:</label>
+                            <select class="form-control select2" asp-for="sourceDistributor" style="width: 200px;">
+                                <option></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-compact" id="btnDoAction">
+                                <i class="fa fa-arrow-right"></i> Move
+                            </button>
+                            <button type="button" class="btn btn-success btn-compact" id="btnDoAction2">
+                                <i class="fa fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="small">To:</label>
+                            <select class="form-control select2" asp-for="destinationDistributor" style="width: 200px;">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side-by-Side Grids -->
+            <div class="grid-container">
+                <div class="grid-column">
+                    <div class="box source-panel">
+                        <div class="box-header with-border">
+                            <div class="form-inline-compact" style="display: flex; justify-content: space-between; width: 100%;">
+                                <h3 class="box-title">Source Outlets</h3>
+                                <div class="form-inline-compact">
+                                    <div class="form-group" style="margin-right: 10px;">
+                                        <label class="small">Filter By:</label>
+                                        <select asp-for="filtercriatria" class="form-control select2" style="width: 120px;">
+                                            <option value=""></option>
+                                            <option value="semid">SEM ID</option>
+                                            <option value="name">Name</option>
+                                            <option value="sector">Sector</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary btn-compact" id="btnDoAction3">
+                                            <i class="fa fa-filter"></i> Show Outletes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body" style="padding: 5px; height: calc(100% - 40px);">
+                            @await Html.PartialAsync("customerListFrom.cshtml")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-column">
+                    <div class="box destination-panel">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Destination Outlets</h3>
+                        </div>
+                        <div class="box-body" style="padding: 5px; height: calc(100% - 40px);">
+                            @await Html.PartialAsync("customerListTo.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $('#@nameof(Model.sourceDistributor)').select2({
+        data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(distributorList)),
+        placeholder: "Select Source",
+        allowClear: true
+    });
+
+    $('#@nameof(Model.destinationDistributor)').select2({
+        data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(distributorList)),
+        placeholder: "Select Destination",
+        allowClear: true
+    });
+
+    $('#@nameof(Model.filtercriatria)').select2({
+        placeholder: "Filter by",
+        allowClear: true,
+        width: '100%'
+    });
+</script>
+
+<script>
+    // Your existing JavaScript functions remain the same
+    $('#@nameof(Model.sourceDistributor)').on("change", function() {
+        $('#@nameof(Model.sourceDistributor)').val($('#@nameof(Model.sourceDistributor)').val())
+        $('#@nameof(Model.actionDestinations)').val("")
+        $('#@nameof(Model.destinationDistributor)').val(null)
+    });
+
+    $('#btnDoAction').click(function(e) {
+        $('#@nameof(Model.moveorCopy)').val("move")
+        onDoActionBtnClick()
+    })
+
+    $('#btnDoAction2').click(function(e) {
+        $('#@nameof(Model.moveorCopy)').val("copy")
+        onDoActionBtnClick()
+    })
+
+    $("#btnDoAction3").click(function() {
+        updateTable('#source-DistributorCustormers-list')
+    });
+
+    function onDoActionBtnClick() {
+        var dest = $('#@nameof(Model.destinationDistributor)').val();
+        var src = $('#@nameof(Model.sourceDistributor)').val();
+
+        if (!dest) {
+            swal("", "Please select destination distributor!", "error");
+            return;
+        }
+
+        if (dest === src) {
+            swal("", "Source and destination cannot be the same!", "error");
+            return;
+        }
+
+        var c = selectedIds.join(",");
+        if (!c) {
+            swal("", "Please select at least one outlet!", "error");
+            return;
+        }
+
+        $.ajax({
+            url: "@Url.Action("copyMoveCustomer", "OutleteTransfer")",
+            type: "POST",
+            data: {
+                actionDestinations: c,
+                selectedRecord: $('#@nameof(Model.selectedRecord)').val(),
+                selectedAction: $('#@nameof(Model.selectedAction)').val(),
+                destinationDistributor: $('#@nameof(Model.destinationDistributor)').val(),
+                sourceDistributor: $('#@nameof(Model.sourceDistributor)').val(),
+                moveorCopy: $('#@nameof(Model.moveorCopy)').val(),
+            },
+            success: function(data) {
+                $.alert("Operation completed!", {
+                    type: 'success',
+                    position: ['top-right']
+                });
+
+                $('#@nameof(Model.actionDestinations)').val(data.data)
+                updateTable('#destination-DistributorCustormers-list')
+                updateTable('#source-DistributorCustormers-list')
+            },
+            error: function() {
+                $.alert("Operation failed!", {
+                    type: 'danger',
+                    position: ['top-right']
+                });
+            }
+        });
+    }
+</script>

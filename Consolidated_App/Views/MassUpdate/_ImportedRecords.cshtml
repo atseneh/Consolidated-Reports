@@ -1,0 +1,62 @@
+﻿@model MassUpdateForImport
+
+
+@if (Model?.ExcelCountList != null)
+{
+    <table class="table-striped table-bordered" id="expiryDateNotificationTbl" style="width:100%">
+        <thead class="text-black">
+            <tr>
+                <th>SEM ID</th>
+                <th>Customer name</th>
+                <th>Trade name</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>TIN No</th>
+                <th>City</th>
+                <th>Telephone</th>
+                <th>Street</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        @if (Model?.ExcelCountList != null)
+        {
+            <tbody>
+                @foreach (var item in Model?.ExcelCountList)
+                {
+                    <tr>
+                        <td>@item?.organizationID</td>
+                        <td>@item?.organizationName</td>
+                        <td>@item?.organizationName</td>
+                        <td>@item?.category</td>
+                        <td>@item?.parentCategory</td>
+                        <td>@item?.tin</td>
+                        <td>@item?.city</td>
+                        <td>@item?.telephone</td>
+                        <td>@item?.street</td>
+                        <td>@item?.latitude</td>
+                        <td>@item?.longitude</td>
+                        <td class="center">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><div class="footerInput text-black">@String.Format("{0:n2}", 0)</div></td>
+                </tr>
+            </tfoot>
+        }
+    </table>
+}
+else
+{
+    <div class="container text-center">
+        <div style="background: #a9d8ed1a !important;" class="jumbotron">
+            <h2 style="color: #95b5af;">Import Customer List</h2>
+        </div>
+    </div>
+
+}

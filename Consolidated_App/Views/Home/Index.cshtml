@@ -1,4 +1,34 @@
-﻿<div class="content-wrapper" style="background: url('/images/background-pattern.png') center/cover no-repeat;">
+﻿@using Consolidated_App.Models.FramworkModels
+@using Consolidated_App.WebConstants
+@using Cnetv7BufferHolder
+@model MainModel
+@using CNET_V7_Domain.Domain.SecuritySchema
+@inject Consolidated_App.Common.AuthNavigation.NavigatorManager navigationManager
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@inject Consolidated_App.AuthNavigation.AuthenticationManager authenticationManager
+
+@{
+    var authedUser = await authenticationManager.GetAuthenticatedUser();
+    var userRole = await sharedHelpers.GetUserRoleM(authedUser?.Id ?? 0);
+    var _r = userRole?.Role ?? 0;
+
+    var roleFunctions = GeneralBufferHolder.FunctionWithAccessMatrix
+        .Where(u => u.VisuaCompDesc == "Heineken System Management Access"
+                 && u.Role.HasValue
+                 && u.Role.Value == _r)
+        .ToList();
+    bool hasMassUpdate = roleFunctions.Any(f => f.Description == "Mass Update" && f.Access == true);
+    bool hasOutletTransfer = roleFunctions.Any(f => f.Description == "Outlet Transfer" && f.Access == true);
+    bool hasPriceManagement = roleFunctions.Any(f => f.Description == "Price Management" && f.Access == true);
+
+    bool hasConsolidatedReport = Model?.reportaccess?.Any(f => f.DefaultName == "Consolidated Report" && f.Access ==true) ?? false;
+    bool hasActivityReport = Model?.reportaccess?.Any(f => f.DefaultName == "Activity Report" && f.Access == true) ?? false;
+    bool hasStockConsolidationReport = Model?.reportaccess?.Any(f => f.DefaultName == "Stock Consolidation Report" && f.Access == true) ?? false;
+    bool hasCommerceReport = Model?.reportaccess?.Any(f => f.DefaultName == "Heineken E-Commerce Report" && f.Access == true) ?? false;
+    bool hasOrderManagementReport = Model?.reportaccess?.Any(f => f.DefaultName == "Order Management Report" && f.Access == true) ?? false;
+    //Get report by role from access matrix and reports with type of heinken report
+}
+<div class="content-wrapper" style="background: url('/images/background-pattern.png') center/cover no-repeat;">
     <section class="content-header text-center">
         <h1 style="font-size: 3.5rem; font-weight: 300; color: #008249; margin-top: 50px;">
             Welcome to <strong>Consolidated Reports Portal</strong>
@@ -17,8 +47,16 @@
                     </span>
                     <h3>Sales & Activity Reports</h3>
                     <p>Access comprehensive sales performance metrics and activity tracking across all outlets.</p>
-                    <a href="@Url.Action("Index","ConsolidatedReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Sales Reports</a>
-                    <a href="@Url.Action("Index","ActivityReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Activity Reports</a>
+                    @if (hasConsolidatedReport)
+                    {
+                        <a href="@Url.Action("Index","ConsolidatedReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Sales Reports</a>
+
+                    }
+                    @if (hasActivityReport)
+                    {
+                        <a href="@Url.Action("Index","ActivityReport")" class="btn btn-sm btn-success" style="margin-top: 15px;">View Activity Reports</a>
+
+                    }
                 </div>
             </div>
 
@@ -29,8 +67,10 @@
                     </span>
                     <h3>Inventory Management</h3>
                     <p>Consolidated stock views, transfer management, and real-time inventory tracking.</p>
-                    <a href="@Url.Action("Index","StockConsolidationReport")" class="btn btn-sm btn-primary" style="margin-top: 15px;">Stock Reports</a>
-                    <a href="@Url.Action("Index","OutleteTransfer")" class="btn btn-sm btn-primary" style="margin-top: 15px;">Transfer Outlet</a>
+                    @if (hasStockConsolidationReport){
+                        <a href="@Url.Action("Index","StockConsolidationReport")" class="btn btn-sm btn-primary" style="margin-top: 15px;">Stock Reports</a>
+
+                    }
                 </div>
             </div>
 
@@ -39,11 +79,16 @@
                     <span class="info-box-icon bg-gradient-purple" style="background: linear-gradient(to right, #8e44ad, #9b59b6);">
                         <i class="fa fa-shopping-cart" style="color: white;"></i>
                     </span>
-                    <h3>E-Commerce & Pricing</h3>
+                    <h3>E-Commerce</h3>
                     <p>Integrated e-commerce reports, order management, and pricing tools.</p>
-                    <a href="@Url.Action("Index","EcommerceReport")" class="btn btn-sm btn-info" style="margin-top: 15px;">E-Commerce Reports</a>
-                    <a href="@Url.Action("Index","PriceUpdate")" class="btn btn-sm btn-info" style="margin-top: 15px;">Price Updates</a>
-                    <a href="@Url.Action("Index","OrderManagement")" class="btn btn-sm btn-info" style="margin-top: 15px;">Order Management</a>
+                    @if (hasCommerceReport){
+                        <a href="@Url.Action("Index","EcommerceReport")" class="btn btn-sm btn-info" style="margin-top: 15px;">E-Commerce Reports</a>
+
+                    }
+                    @if (hasOrderManagementReport){
+                        <a href="@Url.Action("Index","OrderManagement")" class="btn btn-sm btn-info" style="margin-top: 15px;">Order Management</a>
+
+                    }
                 </div>
             </div>
         </div>
@@ -53,15 +98,23 @@
                 <div style="background: rgba(255,255,255,0.9); border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
                     <h3 style="color: #008249;">Quick Data Tools</h3>
                     <div class="btn-group" style="margin-top: 15px;">
-                        <a href="@Url.Action("Index","MassUpdate")" class="btn btn-default">
-                            <i class="fa fa-database"></i> Mass Data Update
-                        </a>
-                        <a href="@Url.Action("Index","OrderManagement")" class="btn btn-default">
-                            <i class="fa fa-truck"></i> Order Management
-                        </a>
-                        <a href="@Url.Action("Index","PriceUpdate")" class="btn btn-default">
-                            <i class="fa fa-tag"></i> Price Management
-                        </a>
+                        @if (hasMassUpdate)
+                        {
+                            <a href="@Url.Action("Index","MassUpdate")" class="btn btn-default">
+                                <i class="fa fa-database"></i> Mass Data Update
+                            </a>
+                        }
+                       @if(hasOutletTransfer){
+                            <a href="@Url.Action("Index","OutleteTransfer")" class="btn btn-default">
+                                <i class="fa fa-truck"></i> Transfer Outlet
+                            </a>
+                        }
+                        @if(hasPriceManagement){
+                            <a href="@Url.Action("Index","PriceUpdate")" class="btn btn-default">
+                                <i class="fa fa-tag"></i> Price Management
+                            </a>
+                        }
+                      
                     </div>
                 </div>
             </div>

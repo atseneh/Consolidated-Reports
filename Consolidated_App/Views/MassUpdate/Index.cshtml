@@ -1,1 +1,404 @@
-﻿<h1>Mass Update</h1>
+﻿@model MassUpdateForImport
+@{
+    ViewData["Title"] = "Customer Mass Update";
+}
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    var compBranchs = await sharedHelpers.GetDynamicData<List<CNET_V7_Domain.Domain.CommonSchema.AllHeinekenDistDTO>>("AllHeinekenDist", new Dictionary<string, string>());
+
+    // After processing
+    var distributorList = compBranchs?.Select(s => new Select2Result
+            {
+                id = s?.Tin,
+                text = s.TradeName.ToUpper()
+            }).ToArray();
+}
+
+@if (TempData["successData"] != null)
+{
+    <text>
+        <script>
+            $(document).ready(function () {
+                swal("", "Consignees Updated Successfully!", "success");
+            });
+        </script>
+    </text>
+}
+
+@if (TempData["errorData"] != null)
+{
+    <text>
+        <script>
+            $(document).ready(function () {
+                swal("", "Please Select Distributor First!", "error");
+            });
+        </script>
+    </text>
+}
+
+<style>
+    .swal-button {
+        background-color: #197db7 !important;
+        color: #fff;
+        border: none;
+        box-shadow: none;
+        border-radius: 1px !important;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 10px 24px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .swal-modal {
+        border-radius: 0 !important;
+    }
+
+    .swal-text {
+        color: black !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+
+    .tmprowcolor {
+        background: red;
+    }
+
+    .custom_row_height {
+        height: 30px !important;
+        text-decoration-style: solid !important;
+    }
+
+    .refbtn {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .vbtn {
+        width: 80%;
+        border-radius: 2px;
+        border: 0;
+        height: 25px;
+        color: black;
+        border: 0.5px solid #494343;
+        transition-duration: 0.4s;
+    }
+
+        .vbtn:hover {
+            background-color: #fcfcfc;
+            color: black;
+        }
+
+    .nav-tabs-custom > .nav-tabs {
+        margin: 0;
+        border-bottom-color: #abdaf700 !important;
+        border-top-right-radius: 3px;
+        border-top-left-radius: 3px;
+    }
+
+    .nav > li > a {
+        position: relative;
+        display: block;
+        padding: 2px 10px !important;
+    }
+
+    .box-body {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        padding: 15px;
+    }
+
+    .table > tbody > tr > td {
+        padding: 5px !important;
+    }
+
+    .box {
+        margin-bottom: 20px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .custom_box {
+        position: relative;
+        border-radius: 1px;
+        background: #ffffff;
+        border: 0.25px solid #0000003d;
+        width: 100%;
+    }
+
+    .custom_box2 {
+        position: relative;
+        border-radius: 1px;
+        background: #ffffff;
+        border-top: 0.25px solid #0000003d;
+        width: 100%;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #aaa;
+        border-radius: 0 !important;
+        height: 28px !important;
+        line-height: 28px !important;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 26px !important;
+        }
+
+    .form-control {
+        height: 28px !important;
+    }
+
+    .dataTables_scrollHeadInner {
+        width: 100% !important;
+    }
+
+    table {
+        width: 100% !important;
+    }
+
+    .btn.btn-app {
+        padding: 5px 10px;
+        margin: 0 5px;
+        min-width: 80px;
+        border-radius: 3px;
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+    }
+
+        .btn.btn-app:hover {
+            background-color: #e9e9e9;
+        }
+
+    #displayOrgName {
+        width: 100%;
+        padding: 5px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        height: 28px;
+    }
+
+    .bg-gray {
+        color: #0a0000bd;
+        background-color: #66bdef59 !important;
+    }
+
+    table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
+        background-color: #0064ef78 !important;
+    }
+
+    .swal-button--cancel {
+        color: #555;
+        background-color: #efefef !important;
+    }
+
+    .swal-title {
+        color: rgb(0 0 0 / 98%) !important;
+        font-size: 20px !important;
+    }
+
+    .swal-icon--warning__body {
+        height: 15px !important;
+        top: 10px;
+    }
+
+    .swal-icon--success__hide-corners {
+        background-color: #fff0 !important;
+    }
+
+    .swal-icon--success:after, .swal-icon--success:before {
+        background: #fff0 !important;
+    }
+
+    .referencedVoucherLoader {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 6;
+    }
+
+    #referencedVoucherloader span {
+        background: url(../../images/loading.gif) no-repeat;
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    @@media (max-width: 768px) {
+        .col-md-6, .col-md-4, .col-md-2 {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .box-tools.pull-right {
+            float: none !important;
+        }
+    }
+</style>
+
+<!-- Content Header (Page header) -->
+<div id="referencedVoucherloader" class="referencedVoucherLoader"> <span>&nbsp;</span></div>
+<section class="content-header">
+    <h5>
+        @ViewData["Title"]
+    </h5>
+    <ol class="breadcrumb">
+        <li><a href=@Url.Action("Index","Home")><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-cloud"></i> Mass Update</a></li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Main row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12" style="background:white;">
+                <div class="row">
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-lg-3 col-sm-12 col-md-4">
+                        <div>
+                            <div style="float: left; padding-top: 1px">
+                                <label class="btn btn-app" id="btnImport">
+                                    <i style="color:steelblue" class="fa fa-file-excel-o"></i> Import
+                                </label>
+                                <a href="#" class="btn btn-app" id="btnRefresh">
+                                    <i style="color: steelblue" class="fa fa-refresh"></i> Refresh
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-12 col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>Distributor</label>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="selectedDistributor" class="select2 form-control">
+                                    <option value="">-- Select a Company --</option>
+                                    @if (distributorList != null)
+                                    {
+                                        foreach (var company in distributorList)
+                                        {
+                                            <option value="@company.id"
+                                                    data-text2="@company.text2"
+                                                    data-text3="@company.text3">
+                                                @company.text
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4" style="float:left; padding-top:1px; border:#b4c2cb29 solid 0.25px; padding:0 10px 20px 10px;">
+                                <input style="border: none; outline:none; width:100%;" id="displayOrgName" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <form enctype="multipart/form-data" method="post" id="CustormerImportForm">
+                        <input type="file" accept=".xlsx" id="fileUpload" name="fileUpload" style="display:none">
+                        <input type="hidden" asp-for="distributorName" id="distributorName">
+                        <input type="hidden" asp-for="distributorID" id="distributorID">
+                        <input type="hidden" asp-for="selectedDisConnectionString" id="selectedDisConnectionString">
+                    </form>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-body">
+                    <div class="col-md-12" style="background:white;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @await Html.PartialAsync("_ImportedRecords", new MassUpdateForImport() { ExcelCountList = Model?.ExcelCountList })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        // Initialize select2
+        $('.select2').select2({
+            width: '100%'
+        });
+
+        $("#clientScreenWidth").val($(window).width());
+        $("#clientScreenHeight").val($(window).height());
+        $('.spn').siblings(".treegrid-expander").remove();
+
+        // File upload handling
+        $('#btnImport').click(function() {
+            $('#fileUpload').click();
+        });
+
+        $('#fileUpload').on('change', function(e) {
+            if (this.files.length > 0) {
+                $("#CustormerImportForm").attr("action", "/MassUpdate/ImportExcelCount");
+                $('#CustormerImportForm').submit();
+                customedPageLoader();
+            }
+        });
+
+        // Refresh button
+        $('#btnRefresh').click(function () {
+            location.href = '@Url.Action("Index", "MassUpdate")';
+        });
+
+        // Distributor selection change
+        $('#selectedDistributor').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var distributorName = selectedOption.text().trim();
+            var distributorTin = selectedOption.val();
+
+            $('#distributorName').val(distributorName);
+            $('#distributorID').val(distributorTin);
+            $('#displayOrgName').val(distributorName);
+
+            // AJAX call to get connection string
+            $.ajax({
+                url: '@Url.Action("getSampleConnection", "Test")',
+                data: { con: distributorTin },
+                type: "POST",
+                dataType: 'json',
+                success: function(response) {
+                    if (response.data != null) {
+                        $('#selectedDisConnectionString').val(response.data.dbconnectionstring);
+                    }
+                }
+            });
+        });
+    });
+
+    $(document).ajaxStart(function () {
+        $('#ajaxBusy').show();
+    }).ajaxStop(function () {
+        $('#ajaxBusy').hide();
+    });
+
+    function customedPageLoader() {
+        $("#referencedVoucherloader").toggle();
+    }
+</script>

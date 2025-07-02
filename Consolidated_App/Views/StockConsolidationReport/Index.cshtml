@@ -23,7 +23,9 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    @await Html.PartialAsync("_stockConsolidateGrid")
+                    <div id="partial-content_documetnGrid_Stock">
+                        @await Html.PartialAsync("_stockConsolidateGrid")
+                    </div>
                 </div>
             </div>
         </div>

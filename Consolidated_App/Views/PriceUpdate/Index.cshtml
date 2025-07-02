@@ -1,1 +1,331 @@
-﻿<h1>Price Update</h1>
+﻿@using Consolidated_App.WebConstants
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    var compBranchs = await sharedHelpers.GetDynamicData<List<CNET_V7_Domain.Domain.CommonSchema.AllHeinekenDistDTO>>("AllHeinekenDist", new Dictionary<string, string>()); ;
+
+    // After processing
+    var distributorList = compBranchs?.Select(s => new Select2Result
+            {
+                id = s?.TradeName.ToLower()?.Trim(),
+                text = s.TradeName.ToUpper()
+            }).ToArray();
+
+}
+<style>
+    .swal-button {
+        background-color: #02344cdb !important;
+        color: #fff;
+        border: none;
+        box-shadow: none;
+        border-radius: 1px !important;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 10px 24px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .swal-modal {
+        border-radius: 0 !important;
+    }
+
+    .swal-text {
+        color: black !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+    }
+
+    .referencedVoucherLoader {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 6;
+    }
+
+    #referencedVoucherloader span {
+        background: url(../../images/loading.gif) no-repeat;
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    input {
+        font-size: 14px !important;
+        font-weight: 400 !important;
+    }
+
+    .swal-overlay {
+        background-color: #000a0e6e;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #aaa;
+        border-radius: 0 !important;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+        position: sticky;
+        top: 0;
+        background-color: #fff; /* Ensure background color to avoid transparency on scroll */
+        z-index: 10;
+        padding: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #articleListContainer {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    /* Page loader */
+    #pageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        display: none;
+    }
+
+        #pageLoader img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    #articleTableBody{
+        background:white;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<section class="content-header">
+    <h5>
+        @ViewData["Title"]
+    </h5>
+    <ol class="breadcrumb">
+        <li><a href=@Url.Action("Index", "Home")><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-cloud"></i> Price Update</a></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="box-header with-border">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="companySelect">Select Distributor:</label>
+                        <select id="companySelect" class="select2 form-control">
+                            <option value="">-- Select a Company --</option>
+                            @if (distributorList != null)
+                            {
+                                foreach (var company in distributorList)
+                                {
+                                    <option value="@company.id"
+                                            data-text2="@company.text2"
+                                            data-text3="@company.text3">
+                                        @company.text
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <button id="showArticleList" class="btn btn-primary">Show Article List</button>
+                </div>
+            </div>
+
+
+                <div class="box-body">
+                    <div id="articleListContainer" style="display: none;">
+                        <!-- Action Buttons at the top of the article list -->
+                        <div class="action-buttons">
+                            <button id="saveChanges" class="btn btn-success">Save Changes</button>
+                            <button id="cancelChanges" class="btn btn-danger">Cancel</button>
+                        </div>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Article Code</th>
+                                    <th>Article Name</th>
+                                    <th>Set Self Price</th>
+                                    <th>Set Delivery Price</th>
+                                </tr>
+                            </thead>
+                            <tbody id="articleTableBody">
+                                <!-- Rows will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+</section>
+
+<div id="pageLoader">
+    <img src="../../images/loading.gif" alt="Loading..." />
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Show article list when clicked
+    $('#showArticleList').click(function () {
+        var selectedDistributor = $('#companySelect').val();
+
+        // If no distributor is selected, show an alert
+        if (!selectedDistributor) {
+            alert('Please select a distributor');
+            return;
+        }
+
+        var articleListContainer = $('#articleListContainer');
+        var articleTableBody = $('#articleTableBody');
+
+        // Clear previous rows
+        articleTableBody.empty();
+
+        $.ajax({
+            url: '@Url.Action("GetArticlesByDistributor", "PriceUpdate")',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ distributor: selectedDistributor }),
+            success: function (data) {
+                if (!data || !data.articles || data.articles.length === 0) {
+                    alert("The distributor's TIN number is not valid or no articles found.");
+                    return;
+                }
+
+                // Populate the table with the new data
+                $.each(data.articles, function (index, article) {
+                    var row = $('<tr></tr>');
+                    row.append('<td>' + article.code + '</td>');
+                    row.append('<td>' + article.name + '</td>');
+                    row.append('<td><input type="text" class="form-control article-new-price" value="" data-code="' + article.code + '" data-articleId="' + article.articleId + '" data-name="' + article.name + '" oninput="validatePriceInput(this)" /></td>');
+                    row.append('<td><input type="text" class="form-control article-new-price2" value="" data-code="' + article.code + '" data-articleId="' + article.articleId + '" data-name="' + article.name + '" oninput="validatePriceInput(this)" /></td>');
+
+                    articleTableBody.append(row);
+                });
+
+                // Show the table
+                articleListContainer.show();
+
+                // Change the background color of the "New Price" column
+                $('.article-new-price').parent().css('background-color', 'lightyellow');
+                $('.article-new-price2').parent().css('background-color', '#90ee902e');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to fetch articles. Please try again.');
+            }
+        });
+    });
+
+    // Input validation to allow only numeric values
+    function validatePriceInput(input) {
+        input.value = input.value.replace(/[^0-9\.]/g, ''); // Allow only numbers and decimal points
+    }
+
+    // Save changes when clicked
+    $('#saveChanges').click(function () {
+        var updatedArticles = [];
+
+        // Collect the updated articles
+        $('#articleTableBody tr').each(function () {
+            var code = String($(this).find('.article-new-price').data('code')).trim();
+            var name_ = String($(this).find('.article-new-price').data('name')).trim();
+            var id = $(this).find('.article-new-price').data('articleid');
+            var newPrice = String($(this).find('.article-new-price').val()).trim();
+            var newPrice2 = String($(this).find('.article-new-price2').val()).trim();
+
+            // Only include articles with a non-null and non-zero price
+            if (newPrice !== '' && parseFloat(newPrice) > 0) {
+                updatedArticles.push({
+                    articleId: parseInt(id),
+                    code: code,
+                    name: name_,
+                    SelfPrice: parseFloat(newPrice),
+                    DeliveryPrice: parseFloat(newPrice2)
+                });
+            }
+        });
+
+        if (updatedArticles.length === 0) {
+            Swal.fire({
+                title: 'No Changes',
+                text: 'Please update at least one article price before saving.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Send the updated articles to the server
+        $.ajax({
+            url: '@Url.Action("SaveArticlePrices", "PriceUpdate")',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                updatedArticles: updatedArticles,
+                distributer: $('#companySelect').val()
+            }),
+            success: function (data) {
+                
+               if (data.success) {
+            Swal.fire({
+                title: 'Success',
+                text: data.message || 'Prices updated successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload(); // Reload only when "OK" is clicked
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: data.message || 'Failed to update prices. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to update prices. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+    // Cancel changes when clicked
+    $('#cancelChanges').click(function () {
+        // Close the article list without saving changes
+        $('#articleListContainer').hide();
+    });
+</script>
+

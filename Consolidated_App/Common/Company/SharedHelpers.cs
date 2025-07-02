@@ -45,7 +45,32 @@ namespace Consolidated_App.WebConstants
 
             return _organization;
         }
+        public virtual async Task<List<ReportDTO>?> GetReportsBySubSystem()
+        {
+            var reports_ = new List<ReportDTO>();
 
+            var response = await _httpClient.GetAsync("Report/dynamic?subsystem=3193");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var jsysDto = await response.Content.ReadAsStringAsync();
+            reports_ = JsonConvert.DeserializeObject<List<ReportDTO>>(jsysDto);
+
+            return reports_;
+        }
+        public virtual async Task<List<AccessMatrixDTO>?> GetAccessM(int role)
+        {
+            var access_ = new List<AccessMatrixDTO>();
+
+            var response = await _httpClient.GetAsync("AccessMatrix/dynamic?Role=" +role);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var jsysDto = await response.Content.ReadAsStringAsync();
+            access_ = JsonConvert.DeserializeObject<List<AccessMatrixDTO>>(jsysDto);
+
+            return access_;
+        }
         public async Task<TResponse> SendReqAsync<TRequest, TResponse>(string url, TRequest requestData)
         {
             try

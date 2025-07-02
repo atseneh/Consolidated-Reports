@@ -4,6 +4,13 @@
 @(Html.DevExtreme().DataGrid<StockConsolidationResult>()
 
             .ID("consolidated-stock-report-list")
+             .DataSource(ds => ds
+                .Mvc()
+                .Controller("StockConsolidationReport")
+                .LoadAction("GetDocumentList")
+                .Key("distributor")
+                .LoadParams(Model)
+            )
             .Columns(columns =>
             {
                 columns.Add().DataField("distributor").Caption("Distributor").Width(200);

@@ -1,5 +1,7 @@
+using Consolidated_App;
 using Consolidated_App.AuthNavigation;
 using Consolidated_App.Common.AuthNavigation;
+using Consolidated_App.Models;
 using Consolidated_App.WebConstants;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
@@ -16,8 +18,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddRazorPages()
-    .AddRazorRuntimeCompilation();
+//builder.Services.AddRazorPages()
+//    .AddRazorRuntimeCompilation();
 
 // Use Serilog for logging
 builder.Logging.ClearProviders();
@@ -45,8 +47,9 @@ builder.Services.AddHttpClient("mainclient", client =>
         ServerCertificateCustomValidationCallback = (messag, cart, chain, errors) => true,
     };
 });
-
+builder.Services.Configure<OtherSettings>(configuration.GetSection("OtherSettings"));
 builder.Services.AddScoped<NavigatorManager>();
+builder.Services.AddScoped<InitialBufferPopulator>();
 builder.Services.AddScoped<SharedHelpers>();
 builder.Services.AddScoped<AuthenticationManager>();
 builder.Services.Configure<FormOptions>(x =>

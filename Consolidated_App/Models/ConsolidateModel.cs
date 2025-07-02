@@ -19,6 +19,8 @@ namespace Consolidated_App.Models
     public class ConsolidateResult 
     {
         public int id { get; set; }
+        public string code { get; set; }
+        public string distributer { get; set; }
         public DateTime issueddate { get; set; }
         public string customrId { get; set; }
         public string customre_Name { get; set; }
@@ -41,9 +43,8 @@ namespace Consolidated_App.Models
     public class StockConsolidationSearch 
     {
         public string store { get; set; }
-        public string date { get; set; }
+        public string uploadDate { get; set; }
         public string Distributor { get; set; }
-        public List<string> distdistributor { get; set; }
         public string diststorescode { get; set; }
         public string diststoresname { get; set; }
         public string removezeros { get; set; }
@@ -60,5 +61,10 @@ namespace Consolidated_App.Models
         public string Distributor { get; set; }
         public string currentdistributor { get; set; }
         public string monitorType { get; set; }
+    }
+    public class OtherSettings
+    {
+        public string FtpFilePathIP { get; set; }
+        public string BaseApiIp { get; set; }
     }
 }

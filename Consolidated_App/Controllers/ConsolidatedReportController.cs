@@ -29,7 +29,7 @@ namespace Consolidated_App.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(new ConsolidateModel());
+            return View(new ConsolidateModel { uploadDate = DateTime.Now.ToString()+"-"+DateTime.Now.ToString()});
         }
         [HttpGet]
         public async Task<object> GetDocumentList(DataSourceLoadOptions loadOptions, ConsolidateModel searchModel)
@@ -51,9 +51,9 @@ namespace Consolidated_App.Controllers
         }
         public async Task<List<AllSalesReportViewDTO>> GetAllSalesReport(ConsolidateModel searchModel)
         {
-                Dictionary<string, string> Dictionaryvalue = new Dictionary<string, string>();
+            Dictionary<string, string> Dictionaryvalue = new Dictionary<string, string>();
             var issuedDateRange = GeneralHelpers.parseDateRange(searchModel.uploadDate);
-            if (searchModel.issuedDate == "none")
+            if (searchModel.uploadDate == "none")
             {
                 issuedDateRange = new DateRange();
                 issuedDateRange.startDate = DateTime.Now.AddYears(-22);
@@ -64,7 +64,7 @@ namespace Consolidated_App.Controllers
             if (issuedDateRange?.endDate != null)
                 Dictionaryvalue.Add("IssuedDate:", issuedDateRange?.endDate?.ToString());
             if (searchModel.Distributor != null && searchModel.Distributor != "")
-                Dictionaryvalue.Add("Org", searchModel.Distributor.ToString());
+                Dictionaryvalue.Add("Distributer", searchModel.Distributor.ToString());
             try
             {
                 var report = await _sharedHelpers.GetDynamicData<List<AllSalesReportViewDTO>>("AllSalesReportView", Dictionaryvalue);

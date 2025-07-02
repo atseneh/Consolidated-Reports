@@ -10,6 +10,7 @@ namespace Consolidated_App.Models
         [DisplayName("Date")]
         public string issuedDate { get; set; }
         public string currentDistributor { get; set; }
+        public string uploadDate { get; set; }
     }
 
     public class ConsolidateActivityResult 

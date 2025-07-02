@@ -1,4 +1,18 @@
-﻿@{
+﻿@using Consolidated_App.WebConstants
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    var distributorList = new List<Select2Result>();
+    try{
+        var compBranchs = await sharedHelpers.GetDynamicData<List<CNET_V7_Domain.Domain.CommonSchema.AllHeinekenDistDTO>>("AllHeinekenDist", new Dictionary<string, string>()); ;
+         distributorList = compBranchs?.Select(s => new Select2Result
+                {
+                    id = s?.TradeName?.ToLower(),
+                    text = s.TradeName.ToUpper()
+                }).ToList();
+    }catch{
+
+    }
+   
 
 }
 @model ConsolidateModel;
@@ -77,7 +91,17 @@
                             </div>
                             <select id="distributor" name="distributor" class="form-control" style="border-radius: 4px;">
                                 <option value="">All Distributors</option>
-                                <option value="dist1">Heluf Tsegaye Test</option>
+                                @if (distributorList != null)
+                                {
+                                    foreach (var company in distributorList)
+                                    {
+                                        <option value="@company.id"
+                                                data-text2="@company.text2"
+                                                data-text3="@company.text3">
+                                            @company.text
+                                        </option>
+                                    }
+                                }
                             </select>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using CNET_V7_Domain.Domain.CommonSchema;
 using CNET_V7_Domain.Domain.ViewSchema;
 using CNET_V7_Domain.Misc;
 using Consolidated_App.Models;
@@ -22,7 +23,7 @@ namespace Consolidated_App.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(new StockConsolidationSearch { uploadDate = DateTime.Now.ToString() + "-" + DateTime.Now.ToString() });
         }
 
         [HttpGet]
@@ -47,7 +48,7 @@ namespace Consolidated_App.Controllers
         {
             Dictionary<string, string> Dictionaryvalue = new Dictionary<string, string>();
             var issuedDateRange = GeneralHelpers.parseDateRange(searchModel.uploadDate);
-            if (searchModel.issuedDate == null)
+            if (searchModel.uploadDate == null)
             {
                 issuedDateRange = new DateRange();
                 issuedDateRange.startDate = DateTime.Now.AddYears(-22);
@@ -57,11 +58,11 @@ namespace Consolidated_App.Controllers
                 Dictionaryvalue.Add("startDate", issuedDateRange?.startDate?.ToString());
             if (issuedDateRange?.endDate != null)
                 Dictionaryvalue.Add("endDate", issuedDateRange?.endDate?.ToString());
-            if (searchModel?.currentdistributor != null)
-                Dictionaryvalue.Add("distributer", searchModel?.currentdistributor?.ToString());
+            //if (searchModel?.currentdistributor != null)
+                Dictionaryvalue.Add("distributer", "0059986929");
             try
             {
-                var report = await _sharedHelpers.GetFilterDynamicData<ResponseModel<List<CNET_V7_Domain.Misc.StockConsolidationResult>>>("cnetRepot/stock_consolidation_result", Dictionaryvalue);
+                var report = await _sharedHelpers.GetFilterDynamicData<ResponseModel<List<CNET_V7_Domain.Misc.StockConsolidationResult>>>("cnetReport/stock_consolidation_result", Dictionaryvalue);
                 if (report.Success)
                 {
                     return report.Data;
@@ -70,11 +71,12 @@ namespace Consolidated_App.Controllers
                 {
                     return new List<CNET_V7_Domain.Misc.StockConsolidationResult>();
                 }
-
+                
             }
             catch
             {
                 return new List<CNET_V7_Domain.Misc.StockConsolidationResult>();
+                
             }
         }
       

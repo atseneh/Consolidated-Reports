@@ -22,7 +22,8 @@ namespace Consolidated_App.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(new ConsolidateActivitySearchModel { uploadDate = DateTime.Now.ToString() + "-" + DateTime.Now.ToString() });
+          
         }
 
         [HttpGet]
@@ -42,7 +43,7 @@ namespace Consolidated_App.Controllers
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> getDocumentsList_Activity(ConsolidateModel searchModel)
+        public virtual async Task<IActionResult> getDocumentsList_Activity(ConsolidateActivitySearchModel searchModel)
         {
             if (searchModel == null)
             {
@@ -89,7 +90,7 @@ namespace Consolidated_App.Controllers
         {
             Dictionary<string, string> Dictionaryvalue = new Dictionary<string, string>();
             var issuedDateRange = GeneralHelpers.parseDateRange(searchModel.uploadDate);
-            if (searchModel.issuedDate == null)
+            if (searchModel.uploadDate == null)
             {
                 issuedDateRange = new DateRange();
                 issuedDateRange.startDate = DateTime.Now.AddYears(-22);
@@ -99,8 +100,8 @@ namespace Consolidated_App.Controllers
                 Dictionaryvalue.Add("startDate", issuedDateRange?.startDate?.ToString());
             if (issuedDateRange?.endDate != null)
                 Dictionaryvalue.Add("endDate", issuedDateRange?.endDate?.ToString());
-            if (searchModel?.currentdistributor != null)
-                Dictionaryvalue.Add("distributer", searchModel?.currentdistributor?.ToString());
+            if (searchModel?.Distributor != null)
+                Dictionaryvalue.Add("distributer", searchModel?.Distributor?.ToString());
 
             try
             {

@@ -7,12 +7,12 @@
              .Mvc()
              .Controller("ConsolidatedReport")
              .LoadAction("GetDocumentList")
-             .Key("id")
+             .Key("code")
               .LoadParams(Model)
              )
            .Columns(columns =>
             {
-                columns.Add().DataField("id").Visible(false);
+                columns.Add().DataField("code").Visible(true);
                 columns.Add().DataField("issuedDate").Caption("Issued Date").Width(200);
                 columns.Add().DataField("semId").Caption("SEM ID").Width(200);
                 columns.Add().DataField("customerName").Caption("Customer Name").Width(200);
@@ -25,7 +25,7 @@
                 columns.Add().DataField("qty").Caption("Qty");
                 columns.Add().DataField("priceBeforeVat").Caption("Price Before VAT").Format("#,##0.00");
                 columns.Add().DataField("vat").Caption("VAT").Format("#,##0.00");
-                columns.Add().DataField("org").Caption("Distributor");
+                columns.Add().DataField("distributer").Caption("Distributor");
                 columns.Add().DataField("sector").Caption("Sector ID");
                 columns.Add().DataField("grandTotal").Caption("Grand Total").Format("#,##0.00");
                 columns.Add().DataField("trxType").Caption("Sales Type");

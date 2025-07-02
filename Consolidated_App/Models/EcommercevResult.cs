@@ -11,8 +11,18 @@ namespace Consolidated_App.Models
         public string numberOfOrders { get; set; }
         public string orderStatus { get; set; }
         public List<detailList> orderDetail { get; set; }
-    } 
-
+    }
+    public class CustormerMVResult : BaseNopModel
+    {
+        public int id { get; set; }
+        public string code { get; set; }
+        public string cusName { get; set; }
+        public string sector { get; set; }
+        public string category { get; set; }
+        public string selected { get; set; }
+        public bool isActive { get; set; }
+        public string connectTo { get; set; }
+    }
     public class EcommerceVoucherResult : BaseNopModel
     {
         public string outletName { get; set; }

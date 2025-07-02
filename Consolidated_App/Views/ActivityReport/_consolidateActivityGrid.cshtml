@@ -1,34 +1,7 @@
 ﻿@using DevExtreme.AspNet.Mvc
+@model ConsolidateActivitySearchModel
 <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
 
-@{
-    // Sample Data Source
-    var sampleData = new[]
-    {
-        new ConsolidateActivityResult
-        {
-            distributor = "Distributor A",
-            earliestActivityToday = "2025-03-24 08:00:00",
-            latestActivityToday = "2025-03-24 18:00:00",
-            lastseen = "2025-03-24 18:15:00",
-            totalSKU = 20,
-            totalTransactionsCurrencyFormat = "$1,000",
-            totalQuantityCurrencyFormat = "500",
-            totalSalesCurrencyFormat = "$5,000"
-        },
-        new ConsolidateActivityResult
-        {
-            distributor = "Distributor B",
-            earliestActivityToday = "2025-03-24 09:00:00",
-            latestActivityToday = "2025-03-24 17:30:00",
-            lastseen = "2025-03-24 17:45:00",
-            totalSKU = 25,
-            totalTransactionsCurrencyFormat = "$2,000",
-            totalQuantityCurrencyFormat = "750",
-            totalSalesCurrencyFormat = "$7,500"
-        }
-    };
-}
 <style>
     .custom-button {
         background-color: #ff895e;
@@ -65,14 +38,15 @@
                .CssClass("custom-button")
                .OnClick("showDocumentDetail");
            });
-        columns.Add().DataField("vsmCounts").Caption("VAN").Width(200);
+        columns.Add().DataField("distributor").Caption("Distributor").Width(200);
         columns.Add().DataField("earliestActivityToday").Caption("Earliest Activity").Width(200);
         columns.Add().DataField("latestActivityToday").Caption("Latest Activity").Width(200);
         columns.Add().DataField("lastseen").Caption("Last Seen");
+        columns.Add().DataField("vsmCounts").Caption("Total VSM");
         columns.Add().DataField("totalSKU").Caption("No SKU");
-        columns.Add().DataField("totalTransactionsCurrencyFormat").Caption("Total Transactions");
-        columns.Add().DataField("totalQuantityCurrencyFormat").Caption("Sum of Quantity");
-        columns.Add().DataField("totalSalesCurrencyFormat").Caption("Total Sales");
+        columns.Add().DataField("totalTransactions").Caption("Total Transactions");
+        columns.Add().DataField("voulumeSum").Caption("Sum of Quantity");
+        columns.Add().DataField("totalSales").Caption("Total Sales").Format("#,##0.00");
     })
     .Paging(p => p.PageSize(150))
     .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
@@ -91,13 +65,56 @@
     .Summary(s => s
     .TotalItems(totalItems =>
     {
+        totalItems.AddFor(m => m.totalSales).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
         // Add summary configurations here if needed
     })
     )
 )
+<input asp-for="uploadDate" hidden value="@Model.uploadDate" />
 
 <script>
-    function showDocumentDetail(event) {
+     function formatNumber(number) {
+        var numberStr;
+        if (number.value) {
+            if (number.value < 0) {
+                numberStr = '(' + (number.value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") * -1) + ')'
+            }
+            else {
+                numberStr = number.value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+        } else {
+            numberStr = '0.00'
+        }
+        return numberStr;
+    }
+</script>
+<script>
+      function showDocumentDetail(e) {
+        // Get the row data from the event
+        var rowData = e.row.data;
+        var distributor = rowData.distributor;
+
+        console.log("Selected distributor:", distributor);
+
+        // Pass the distributor to the update function
+        updateDataGrid(distributor);
         $('#detailModal').modal({ backdrop: 'static', keyboard: false });
+    }
+
+    function updateDataGrid(distributor) {
+        var grid = $("#consolidate-activityDetail-list").dxDataGrid('instance');
+        if (grid) {
+            grid.option('dataSource', {
+                load: function (loadOptions) {
+                    return $.ajax({
+                        url: '@Url.Action("GetDocumentList_Activity_Detail", "ActivityReport")',
+                        data: { Distributor: distributor,uploadDate:$('#@nameof(Model.uploadDate)').val()},  // Pass the distributor value here
+                        type: 'GET',
+                        dataType: 'json'
+                    });
+                }
+            });
+            grid.refresh();
+        }
     }
 </script>

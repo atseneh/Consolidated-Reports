@@ -1,6 +1,6 @@
 ﻿@using DevExtreme.AspNet.Mvc
 <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
-
+@model ConsolidateActivitySearchModel
 @(Html.DevExtreme().DataGrid<ConsolidateActivityResult>()
 
             .ID("consolidate-activityDetail-list")
@@ -8,7 +8,7 @@
             .Mvc()
             .Controller("ActivityReport")
             .LoadAction("GetDocumentList_Activity_Detail")
-            .Key("Distributor")
+            .Key("distributor")
             .LoadParams(Model)
             )
             .Columns(columns =>
@@ -19,8 +19,8 @@
                 columns.Add().DataField("lastseen").Caption("Last Seen");
                 columns.Add().DataField("totalTransactions").Caption("Total Transactions");
                 columns.Add().DataField("totalSku").Caption("SKU");
-                columns.Add().DataField("quantitysumCurrencyFormat").Caption("Sum of Quantity");
-                columns.Add().DataField("totalSalesCurrencyFormat").Caption("Total Sales").Format("#,##0.00");
+                columns.Add().DataField("quatitySum").Caption("Sum of Quantity");
+                columns.Add().DataField("totalSales").Caption("Total Sales").Format("#,##0.00");
        
             })
             .Paging(p => p.PageSize(150))
@@ -40,7 +40,8 @@
             .Summary(s => s
             .TotalItems(totalItems =>
             {
-                totalItems.AddFor(m => m.totalSKU).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.totalSales).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
+                totalItems.AddFor(m => m.totalTransactions).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
            @*      totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
                 totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
                 totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");

@@ -1,150 +1,351 @@
 ﻿@model StockConsolidationSearch
+@inject Consolidated_App.WebConstants.SharedHelpers sharedHelpers
+@{
+    var distributorList = new List<Select2Result>();
+    try
+    {
+        var compBranchs = await sharedHelpers.GetDynamicData<List<CNET_V7_Domain.Domain.CommonSchema.AllHeinekenDistDTO>>("AllHeinekenDist", new Dictionary<string, string>()); ;
+        distributorList = compBranchs?.Select(s => new Select2Result
+                {
+                    id = s?.Tin,
+                    text = s.TradeName.ToUpper()
+                }).ToList();
+    }
+    catch
+    {
 
-<div class="box box-default" style="border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
-    <div class="box-header with-border" style="background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); border-radius: 8px 8px 0 0; padding: 12px 15px;">
-        <h5 class="box-title" style="color: white; font-weight: 600; display: inline-block;">
-            <i class="fa fa-search mr-2"></i>
-        </h5>
-        <p class="text-md-left text-sm-center" id="searchCriteriaTxt"
-           style="display:inline !important; margin-left: 15px !important; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.9); font-style: italic;">
-            Filter criteria will appear here
-        </p>
+    }
+
+
+}
+
+<style>
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px !important;
+        height: 38px;
+        padding: 6px 12px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .input-group-addon {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #e0e0e0;
+        border-right: none;
+    }
+
+    .box-default {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+    }
+
+    .box-header {
+        background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+        border-radius: 8px 8px 0 0;
+        padding: 12px 15px;
+    }
+
+    .box-title {
+        color: white;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    #searchCriteriaTxt {
+        display: inline !important;
+        margin-left: 15px !important;
+        padding-left: 15px;
+        border-left: 1px solid rgba(255,255,255,0.3);
+        color: rgba(255,255,255,0.9);
+        font-style: italic;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        font-weight: 500;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, #1b5e20 0%, #388e3c 100%);
+    }
+
+    .box-body {
+        padding: 20px;
+        background-color: #f5f9f5;
+    }
+
+    .col-form-label {
+        font-weight: 500;
+        color: #2e7d32;
+    }
+
+    .ui-datepicker {
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+</style>
+<style>
+    #ribbon-box {
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #212529;
+        font-size: 0.875rem;
+    }
+
+    .form-control, .form-select {
+        height: 2.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        transition: all 0.15s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: 0;
+        }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        border-radius: 0.375rem;
+    }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .row.g-3
+
+    {
+        gap: 1rem;
+    }
+
+    #ribbon-box {
+        padding: 1rem;
+    }
+
+    }
+</style>
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h5 class="box-title"><i class="fa fa-search mr-2"></i>Search</h5>
+        <p class="text-md-left text-sm-center" id="searchCriteriaTxt">Filter criteria will appear here</p>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" id="ribbonCollaps" style="color: white;">
                 <i class="fa fa-minus"></i>
             </button>
         </div>
     </div>
-    <form asp-controller="StockConsolidationReport" asp-action="getDocumentsList" method="post" novalidate="novalidate" id="myForm">
-        <div class="box-body" id="ribbon-box" style="padding: 20px; background-color: #f5f9f5;">
-            <div class="form-group">
-                <label for="uploadDate" style="font-weight: 500; color: #2e7d32;">Date Range</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" style="background-color: #e8f5e9; color: #2e7d32;">
-                            <i class="fa fa-calendar"></i>
-                        </span>
+    <div class="box-body" id="ribbon-box">
+        <form method="post" novalidate="novalidate">
+            <div class="row">
+                <!-- Distributor Field -->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="d-flex flex-column">
+                        <label for="distributor" class="form-label mb-1">Distributor</label>
+                        <select id="distributor" name="distributor" class="form-select">
+                            <option value="">All Distributors</option>
+                            @if (distributorList != null)
+                            {
+                                foreach (var company in distributorList)
+                                {
+                                    <option value="@company.id"
+                                            data-text2="@company.text2"
+                                            data-text3="@company.text3">
+                                        @company.text
+                                    </option>
+                                }
+                            }
+                        </select>
                     </div>
-                    <input type="text" id="uploadDate" name="uploadDate" class="form-control daterangepicker-input"
-                           style="border-radius: 4px !important;" autocomplete="off">
-                    <div class="input-group-append">
-                        <span class="input-group-text" style="background-color: #f5f5f5; cursor: pointer;" id="clearDate">
-                            <i class="fa fa-eraser"></i>
-                        </span>
+                </div>
+
+                <!-- Date Field -->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="d-flex flex-column">
+                        <label for="date" class="form-label mb-1">Date</label>
+                        <input type="date" class="form-control" asp-for="uploadDate" />
+                    </div>
+                </div>
+
+                <!-- Store Field -->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="d-flex flex-column">
+                        <label for="store" class="form-label mb-1">Store</label>
+                        <select asp-for="store" class="form-select select2" name="organn" id="@nameof(Model.store)">
+                            <option value=""></option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-        <div class="form-group text-right mt-4">
-            <button type="button" id="showconsolidateactivitybutn"
-                    class="btn btn-primary"
-                    style="background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
-                           border: none;
-                           padding: 8px 20px;
-                           border-radius: 4px;
-                           font-weight: 500;
-                           color: white;
-                           box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                           transition: all 0.3s ease;">
-                <i class="fa fa-filter mr-2"></i>Apply Filters
-            </button>
-        </div>
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-center mt-4">
+                <button type="button" id="showbutn" class="btn btn-primary px-4">
+                    <i class="fa fa-eye me-2"></i> Show
+                </button>
+            </div>
+        </form>
     </div>
-    </form>
+
+ 
+
+  
 </div>
 
+<link href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet" />
 <script>
     $(function () {
-        // Initialize date range picker with proper styling
-        $('#uploadDate').daterangepicker({
-            showDropdowns: true,
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
-            linkedCalendars: false,
-            opens: 'right',
-            startDate: moment(),
-            endDate: moment(),
-            locale: {
-                format: 'MM/DD/YYYY'
+        $('#@nameof(Model.uploadDate)').datepicker({
+            dateFormat: "yy-mm-dd",
+            beforeShow: function(input, inst) {
+                setTimeout(function() {
+                    inst.dpDiv.css({
+                        'border-radius': '4px',
+                        'box-shadow': '0 2px 10px rgba(0,0,0,0.08)',
+                        'border': '1px solid #e0e0e0'
+                    });
+                }, 0);
+            }
+        }).datepicker("setDate", new Date());
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var ckflextax = $('#removezero').prop('checked');
+        console.log("test")
+        console.log(ckflextax)
+        $('#removezero').change(function () {
+            var ischecked = $(this).is(':checked');
+            console.log(ischecked)
+            if (ischecked) {
+                $('#@nameof(Model.removezeros)').val("true")
+            }
+            else {
+              $('#@nameof(Model.removezeros)').val("false")
             }
         });
+    });
+</script>
 
-        // Clear date range
-        $('#clearDate').click(function() {
-            $('#uploadDate').val('');
+
+
+<script>
+    $(document).ready(function () {
+        $("select.select2").change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+            var d = $('#Distributor option[value="Select Distributor"]');
+            if (d.length != 0 && selectedCountry == "Select Distributor") {
+                d.remove();
+                $('#Distributor').val("");
+            }
         });
+    });
+</script>
 
-        // Apply filters button
-        $('#showconsolidateactivitybutn').click(function () {
-            $('#ribbonCollaps').trigger('click');
-
-            // Get filter values
-            const dateRange = $('#uploadDate').val() || 'All Dates';
-            const distributor = $('#distributor option:selected').text() || 'All Distributors';
+<script>
+    $(document).ready(function () {
+        $("#showbutn").click(function () {
+            var countries = [];
+            $.each($(".select2 option:selected"), function () {
+                countries.push($(this).val());
+                var d = $('#Distributor option[value="Select Distributor"]');
+                if (countries == "Select Distributor") {
+                    d.remove();
+                    $('#Distributor').val("");
+                }
+            });
 
             // Update search criteria text
             let filterText = '';
-            if (dateRange !== 'All Dates') {
-                filterText += `<strong>Date:</strong> ${dateRange}`;
-            }
-            if (distributor !== 'All Distributors') {
-                if (filterText) filterText += ' | ';
+            const distributor = $('#@nameof(Model.Distributor) option:selected').text();
+            const store = $('#@nameof(Model.store) option:selected').text();
+            const date = $('#@nameof(Model.uploadDate)').val();
+
+            if (distributor) {
                 filterText += `<strong>Distributor:</strong> ${distributor}`;
+            }
+            if (store) {
+                if (filterText) filterText += ' | ';
+                filterText += `<strong>Store:</strong> ${store}`;
+            }
+            if (date) {
+                if (filterText) filterText += ' | ';
+                filterText += `<strong>Date:</strong> ${date}`;
             }
 
             $('#searchCriteriaTxt').html(filterText || 'No filters applied');
-
-            // Submit form via AJAX
-            var formData = $('#myForm').serialize();
-            $.ajax({
-                url: '/StockConsolidationReport/getDocumentsList',
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    $('#partial-content_documetnGrid_consolidate').html(result);
-                },
-                error: function () {
-                    console.log('Error occurred.');
-                }
-            });
         });
+    });
+</script>
 
-        // Reset button functionality
-        $('#resetFilters').click(function() {
-            $('#uploadDate').val('');
-            $('#distributor').val('');
-            $('#searchCriteriaTxt').text('Filter criteria will appear here');
+<script>
+    $(function () {
+        $('#showbutn').mouseup(function () {
+            $('#ribbonCollaps').trigger('click');
         });
+    });
 
-        // Add hover effect to the buttons
-        const buttons = ['#showconsolidateactivitybutn', '#resetFilters'];
-        buttons.forEach(btn => {
-            $(btn).hover(
-                function() {
-                    $(this).css('transform', 'translateY(-2px)');
-                    $(this).css('box-shadow', '0 4px 8px rgba(0,0,0,0.15)');
-                    if(btn === '#showconsolidateactivitybutn') {
-                        $(this).css('background', 'linear-gradient(135deg, #1b5e20 0%, #388e3c 100%)');
-                    } else {
-                        $(this).css('background-color', '#e8f5e9');
-                    }
-                },
-                function() {
-                    $(this).css('transform', 'translateY(0)');
-                    $(this).css('box-shadow', '0 2px 5px rgba(0,0,0,0.1)');
-                    if(btn === '#showconsolidateactivitybutn') {
-                        $(this).css('background', 'linear-gradient(135deg, #2e7d32 0%, #4caf50 100%)');
-                    } else {
-                        $(this).css('background-color', 'transparent');
-                    }
-                }
-            );
+    $(function () {
+        $('#Exportt').mouseup(function () {
+            $('#ribbonCollaps').trigger('click');
         });
+    });
+</script>
+
+<script>
+    $('#@nameof(Model.store)').select2({
+        ajax: {
+            url: '@Url.Action("GetStoresList", "StockConsolidationReport")',
+            dataType: 'json',
+            data: function (params) {
+                console.log(params);
+                return {
+                    q: $('#@nameof(Model.uploadDate)').val(),
+                    page: params.page,
+                    other: $('#@nameof(Model.Distributor)').val()
+                };
+            },
+            processResults: function (data, params) {
+                return data;
+            },
+            cache: true
+        },
+        placeholder: "Select Store",
+        allowClear: true,
+        width: '100%'
     });
 </script>

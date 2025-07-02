@@ -1,0 +1,51 @@
+﻿@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+
+@(Html.DevExtreme().DataGrid<CustormerMVResult>()
+    .ID("source-DistributorCustormers-list")
+    .Columns(columns =>
+    {
+            columns.Add()
+                .Type(GridCommandColumnType.Selection)
+                .Width(50)
+                .Fixed(true)
+                .FixedPosition(HorizontalEdge.Left);
+
+            columns.Add().DataField("id").Visible(false);
+            columns.Add().DataField("code").Caption("SEM ID");
+            columns.Add().DataField("cusName").Caption("Name");
+            columns.Add().DataField("sector").Caption("Sector");
+            columns.Add().DataField("category").Caption("Category");
+            columns.Add().DataField("isActive").Caption("IsActive");
+        })
+        .Paging(p => p.PageSize(150))
+        .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
+        .Height(500)
+        .FilterRow(f => f.Visible(false))
+        .HeaderFilter(f => f.Visible(false))
+        .SearchPanel(p => p.Visible(false).Width(200))
+        .GroupPanel(p => p.Visible(false))
+        .Grouping(g => g.AutoExpandAll(false))
+        .RemoteOperations(false)
+        .RowAlternationEnabled(true)
+        .AllowColumnResizing(true)
+        .ColumnAutoWidth(true)
+        .ShowBorders(true)
+        .ColumnChooser(c => c.Enabled(false))
+        .Selection(s => s
+        .Mode(SelectionMode.Multiple)
+        .SelectAllMode(SelectAllMode.Page) 
+        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+        )
+        .OnSelectionChanged(@<text>
+        function(selectedItems) {
+        var selectedData = selectedItems.selectedRowsData;
+        console.log("Selected items:", selectedData);
+        }
+        </text>)
+            .Summary(s => s
+        .TotalItems(totalItems =>
+        {
+        })
+    )
+)

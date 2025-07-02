@@ -1,45 +1,280 @@
-﻿@using DevExtreme.AspNet.Mvc
+﻿@using CNET_V7_Domain.Domain.ViewSchema
+@using DevExtreme.AspNet.Mvc
+@model StockConsolidationSearch;
+
 <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
 
-@(Html.DevExtreme().DataGrid<StockConsolidationResult>()
+<style>
+    .BalanceColor {
+        background: #00a65a12 !important;
+    }
+</style>
 
-            .ID("consolidated-stock-report-list")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("distributor").Caption("Issued Date").Width(200);
-                columns.Add().DataField("store").Caption("Store").Width(200);
-                columns.Add().DataField("sku").Caption("SKU Code");
-                columns.Add().DataField("description").Caption("SKU Name");
-                columns.Add().DataField("lastUpdate").Caption("Last Update");
-                columns.Add().DataField("balance").Caption("Balance");
-                columns.Add().DataField("balanceColor").Visible(false);
+@(Html.DevExtreme().DataGrid<VwConsolidatedHeinkenAttachmentDTO>()
+    .ID("consolidated-attachment-report-list")
+    .DataSource(d => d.Mvc()
+        .Controller("OrderManagement")
+        .LoadAction("GetDocumentList")
+        .Key("code")
+        .LoadParams(Model)
+    )
+    .Columns(columns =>
+    {
+        columns.Add()
+            .Caption(" ")
+            .Width(80)
+            .CellTemplate(@<text>
+                <button style="background:green;" class="btn" onclick="showDocumentDetail('<%- data.url %>')">
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+            </text>);
 
-            })
-            .Paging(p => p.PageSize(150))
-            .Scrolling(s => s.Mode(DevExtreme.AspNet.Mvc.GridScrollingMode.Infinite))
-            .Height(500)
-            .FilterRow(f => f.Visible(false))
-            .HeaderFilter(f => f.Visible(false))
-            .SearchPanel(p => p.Visible(true).Width(500))
-            .GroupPanel(p => p.Visible(false))
-            .Grouping(g => g.AutoExpandAll(false))
-            .RemoteOperations(false)
-            .RowAlternationEnabled(true)
-            .AllowColumnResizing(true)
-            .ColumnAutoWidth(true)
-            .ShowBorders(true)
-            .ColumnChooser(c => c.Enabled(false))
-            .Summary(s => s
-            .TotalItems(totalItems =>
-            {
-                @*    totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
-                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
-                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
-                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber");
-                totalItems.AddFor(m => m.grandTotal).SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Sum).CustomizeText("formatNumber"); *@
-            })
-            )
-            @*  .OnRowPrepared("onRowPrepared")
-            .OnContentReady("onGridInitialized")
-            .OnExporting("exporting") *@
-            )
+        columns.Add().DataField("code").Caption("Code");
+        columns.Add().DataField("orderPlacementDate").Caption("Order Placement Date");
+        columns.Add().DataField("invoiceNumber").Caption("Invoice Number");
+        columns.Add().DataField("description").Caption("Attachment Desc.").Width(200);
+        columns.Add().DataField("distributor").Caption("Distributor");
+        columns.Add().DataField("driverName").Caption("Driver Name");
+        columns.Add().DataField("truckCode").Caption("Truck Code");
+        columns.Add().DataField("trailerCode").Caption("Trailer Code");
+        columns.Add().DataField("cgrnVoucher").Caption("CGRN");
+        columns.Add().DataField("grandTotalAmount").Caption("Grand Total").Alignment(HorizontalAlignment.Right);
+        columns.Add().DataField("state").Caption("State");
+    })
+    .Paging(p => p.PageSize(100))
+    .Scrolling(s => s.Mode(GridScrollingMode.Standard))
+    .Height(600)
+    .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => f.Visible(true))
+    .SearchPanel(p => p.Visible(true))
+    .GroupPanel(p => p.Visible(false))
+    .Grouping(g => g.AutoExpandAll(false))
+    .RemoteOperations(true)
+    .RowAlternationEnabled(true)
+    .AllowColumnResizing(true)
+    .ColumnAutoWidth(false)
+    .ShowBorders(true)
+    .ShowColumnLines(true)
+    .ShowRowLines(true)
+    .ColumnChooser(c => c.Enabled(false))
+    .Summary(s => s.TotalItems(totalItems =>
+    {
+        totalItems.Add()
+            .Column("code")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat("{0} Recs.");
+    }))
+)
+
+<div class="modal" id="VoucherAttachmentModal">
+    <div class="modal-dialog" style="margin-left:15%;min-width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 style="color: Black; font-weight: bold;">
+                    <img src="~/images/Cnets.jpg" />
+                    Attachment
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2" style="padding:2px;">
+                        <div class="list-group"></div>
+                    </div>
+                    <div class="col-md-10 image_preview" style="border:none !important;padding-left:0;">
+                        <iframe id="fileDisplay" style="width: 100%; height: 60vh; border: 1px solid #ccc;"></iframe>
+                        <div class="mt-2">
+                            <button id="printButton" class="btn btn-secondary" onclick="printAttachment()">Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDocumentDetail(url) {
+        $('#VoucherAttachmentModal').find('.modal-body').html(`
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    <p>Loading attachments...</p>
+                </div>
+            `);
+
+        $('#VoucherAttachmentModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).css({ 'max-width': '90%' });
+
+        $('.modal-header .close').css({
+            'font-size': '2rem',
+            'opacity': 1,
+            'color': '#fff',
+            'text-shadow': 'none'
+        });
+
+        $.ajax({
+            url: '@Url.Action("Retrive_Attachement", "OrderManagement")',
+            data: { urltoread: url },
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (data) {
+                if (!data || !data.data || data.data.length === 0) {
+                    showError("No attachments found");
+                    return;
+                }
+
+                try {
+                    $(".list-group").empty();
+                    const modalBody = $('#VoucherAttachmentModal').find('.modal-body');
+                    modalBody.empty();
+
+                    const container = $('<div class="container-fluid h-100"></div>');
+                    const row = $('<div class="row h-100"></div>');
+                    const docCol = $('<div class="col-lg-10 col-md-9 h-100"></div>');
+                    const docContainer = $('<div class="d-flex flex-column h-100"></div>');
+
+                    const fileDisplay = $(`
+                            <iframe id="fileDisplay" class="flex-grow-1 w-100"
+                                style="min-height: 70vh;width: 60vw; border: 1px solid #ddd; background: #f8f9fa;">
+                            </iframe>
+                        `);
+
+                    fileDisplay.attr("src", "about:blank");
+                    setTimeout(function () {
+                        fileDisplay.attr("src", "../../OrderManagement/ReadAttachmentFile?id=" + encodeURIComponent(data.data[0]));
+                    }, 100);
+
+                    const fileInfo = $(`
+                            <div id="fileInfo" class="mt-2 p-2 bg-light border rounded">
+                                <i class="fas fa-file-alt mr-2"></i>
+                                <span>${getFileName(data.data[0])}</span>
+                            </div>
+                        `);
+
+                    docContainer.append(fileDisplay, fileInfo);
+                    docCol.append(docContainer);
+
+                    const listCol = $('<div class="col-lg-2 col-md-3 h-100 overflow-auto"></div>');
+                    const listGroup = $('<div class="list-group"></div>');
+
+                    data.data.forEach(function (url, index) {
+                        const listItem = $(`
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span class="text-truncate">Attachment ${index + 1}</span>
+                                    <span class="badge bg-primary rounded-pill">${getFileExtension(url)}</span>
+                                </a>
+                            `)
+                            .attr("data-url", url)
+                            .click(function (e) {
+                                e.preventDefault();
+                                loadAttachment(url, $(this));
+                            });
+
+                        listGroup.append(listItem);
+                    });
+
+                    listCol.append('<h6 class="mt-2 mb-3">Attachments</h6>', listGroup);
+                    row.append(docCol, listCol);
+                    container.append(row);
+                    modalBody.append(container);
+
+                    $(".list-group-item").first().addClass("active");
+
+                    if ($('#printAttachmentBtn').length === 0) {
+                        $('.modal-footer').prepend(
+                            $(`<button id="printAttachmentBtn" class="btn btn-primary mr-2">
+                                    <i class="fas fa-print mr-2"></i>Print Document
+                                </button>`).click(printAttachment)
+                        );
+                    }
+
+                    $('#VoucherAttachmentModal .modal-dialog').css({
+                        'max-width': '95%',
+                        'height': '85vh',
+                        'min-height': '600px'
+                    });
+
+                } catch (e) {
+                    console.error("Error processing attachments:", e);
+                    showError("Error displaying attachments");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX error:", textStatus, errorThrown);
+                showError("Failed to load attachments. Please try again.");
+            }
+        });
+    }
+
+    function loadAttachment(url, element) {
+        try {
+            $("#fileDisplay").attr("src", "about:blank");
+            setTimeout(function () {
+                $("#fileDisplay").attr("src", "../../OrderManagement/ReadAttachmentFile?id=" + encodeURIComponent(url));
+            }, 100);
+
+            $("#fileInfo").text("Loading...");
+            $(".list-group-item").removeClass("active");
+            element.addClass("active");
+
+            $("#fileInfo").text("Displaying: " + getFileName(url));
+        } catch (e) {
+            console.error("Error loading attachment:", e);
+            $("#fileInfo").text("Error loading file");
+        }
+    }
+
+    function getFileName(url) {
+        return url.split('/').pop() || url;
+    }
+
+    function getFileExtension(url) {
+        const fileName = getFileName(url);
+        const ext = fileName.split('.').pop();
+        return ext ? ext.toUpperCase() : 'FILE';
+    }
+
+    function showError(message) {
+        const modalBody = $('#VoucherAttachmentModal').find('.modal-body');
+        modalBody.html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> ${message}
+                </div>
+                <button class="btn btn-secondary mt-2" onclick="showDocumentDetail()">Retry</button>
+            `);
+    }
+
+    function printAttachment() {
+        const iframe = document.getElementById("fileDisplay");
+        if (iframe && iframe.contentWindow) {
+            try {
+                iframe.contentWindow.focus();
+                setTimeout(() => {
+                    iframe.contentWindow.print();
+                }, 500);
+            } catch (e) {
+                console.error("Print error:", e);
+                alert("Error printing document. Please try opening it directly.");
+            }
+        } else {
+            alert("No document loaded to print.");
+        }
+    }
+
+    $(function () {
+        $("#filter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#consolidated-attachment-report-list .dx-data-row").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
